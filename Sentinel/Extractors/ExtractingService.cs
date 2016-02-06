@@ -93,8 +93,18 @@
 
         public bool IsFiltered(ILogEntry entry)
         {
-            return Extractors.Any(filter => filter.Enabled && filter.IsMatch(entry))
-                   || SearchExtractors.Any(filter => filter.Enabled && filter.IsMatch(entry));
+            // If any extractors are enabled, we want to return based upon the rule, if none are enabled,
+            // then pretend there are no extractors
+            var extractorsEnabled = Extractors.Any(e => e.Enabled) || SearchExtractors.Any(e => e.Enabled);
+
+            if (extractorsEnabled)
+            {
+                var hasMatches = Extractors.Any(e => e.Enabled && e.IsMatch(entry));
+                var searchMatch = SearchExtractors.Any(e => e.Enabled && e.IsMatch(entry));
+                return !(hasMatches || searchMatch);
+            }
+
+            return false;
         }
 
         private void AddExtractor(object obj)

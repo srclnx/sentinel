@@ -68,9 +68,10 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>Sentinel.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>Bin\Release\Sentinel.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>210E130F82DDA3D0FA78068429C1C2E8A6971804</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>8A90274FC7E59D487F5F6BC8CFCE0444E0C5988D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>Sentinel_TemporaryKey.pfx</ManifestKeyFile>

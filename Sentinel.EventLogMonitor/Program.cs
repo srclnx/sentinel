@@ -23,8 +23,8 @@
             {
                 DisplayBanner(options);
 
-                var eventLog = new EventLog { // TODO: pass this on the command line
-                                                Log = "Application" };
+                // TODO: pass this on the command line
+                var eventLog = new EventLog { Log = "Application" };
 
                 eventLog.EntryWritten += NewLogEntryWrittenHandler;
                 eventLog.EnableRaisingEvents = true;

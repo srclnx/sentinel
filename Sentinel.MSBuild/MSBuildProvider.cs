@@ -184,7 +184,7 @@ namespace Sentinel.MSBuild
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Log.Error("Non-specific exception caught", e);
                 }
             }
 

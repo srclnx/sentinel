@@ -146,7 +146,7 @@
                         }
                         catch (Exception e)
                         {
-                            Log.DebugFormat("Exception: {0}", e.Message);
+                            Log.Error($"Non-specific Exception caught: {e.Message}", e);
                         }
                     }
                 }
@@ -195,7 +195,7 @@
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Log.Error($"Non-specific Exception caught: {e.Message}", e);
                 }
             }
 

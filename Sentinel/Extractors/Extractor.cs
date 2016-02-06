@@ -2,6 +2,7 @@
 {
     using System.Diagnostics;
     using System.Globalization;
+    using System.Runtime.InteropServices.WindowsRuntime;
     using System.Runtime.Serialization;
     using System.Text.RegularExpressions;
 
@@ -196,14 +197,14 @@
             switch (Mode)
             {
                 case MatchMode.Exact:
-                    return !target.Equals(Pattern);
+                    return target.Equals(Pattern);
                 case MatchMode.CaseSensitive:
-                    return !target.Contains(Pattern);
+                    return target.Contains(Pattern);
                 case MatchMode.CaseInsensitive:
-                    return !target.ToUpperInvariant().Contains(Pattern.ToUpperInvariant());
+                    return target.ToUpperInvariant().Contains(Pattern.ToUpperInvariant());
                 case MatchMode.RegularExpression:
                     var regex = new Regex(Pattern);
-                    return !regex.IsMatch(target);
+                    return regex.IsMatch(target);
                 default:
                     return false;
             }
