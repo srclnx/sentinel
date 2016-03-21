@@ -144,7 +144,7 @@
                         var p = Providers[index];
                         sb.Append($"{p.Settings.Name} - {p.Settings.Info.Name} - {p.Settings.Summary}");
 
-                        if (index < (providers.Count - 1))
+                        if (index < providers.Count - 1)
                         {
                             sb.AppendLine();
                         }

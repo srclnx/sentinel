@@ -49,8 +49,8 @@
                     sender,
                     AppDomain.CurrentDomain.FriendlyName,
                     e.Exception.Message,
-                    (e.Exception.InnerException != null) ? e.Exception.InnerException.Message : string.Empty,
-                    (e.Exception.TargetSite != null) ? e.Exception.TargetSite.Name : string.Empty,
+                    e.Exception.InnerException?.Message ?? string.Empty,
+                    e.Exception.TargetSite?.Name ?? string.Empty,
                     e.Exception.StackTrace ?? string.Empty,
                     e.Exception.HelpLink ?? string.Empty);
 

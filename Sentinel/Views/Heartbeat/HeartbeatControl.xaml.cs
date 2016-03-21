@@ -60,7 +60,7 @@
 
             // Prepoulate structure with entry off to side and down to origin.
             returnCollection.Add(new Point(xPosition, height));
-            returnCollection.Add(new Point(xPosition, height - (values.ElementAt(0) * heightScale)));
+            returnCollection.Add(new Point(xPosition, height - values.ElementAt(0) * heightScale));
             xPosition += stride;
 
             foreach (int value in values)

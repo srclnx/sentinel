@@ -33,7 +33,7 @@
             OrderEarlier = new DelegateCommand(MoveItemUp, e => selectedIndex > 0);
             OrderLater = new DelegateCommand(
                 MoveItemDown,
-                e => selectedIndex < (Highlighters.Count - 1) && selectedIndex != -1);
+                e => selectedIndex < Highlighters.Count - 1 && selectedIndex != -1);
 
             Highlighters = new ObservableCollection<T>();
 
