@@ -7,7 +7,6 @@
     using System.Linq;
 
     using Sentinel.Views.Gui;
-    using Sentinel.Views.Heartbeat;
     using Sentinel.Views.Interfaces;
 
     public class ViewManager : IViewManager
@@ -17,7 +16,6 @@
         public ViewManager()
         {
             Register(LogMessages.Info, typeof(LogMessages));
-            Register(MessageHeatBeat.Info, typeof(MessageHeatBeat));
         }
 
         /// <summary>

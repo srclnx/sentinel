@@ -263,10 +263,6 @@
       <DependentUpon>MultipleViewFrame.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Gui\ViewInformation.cs" />
-    <Compile Include="Views\Heartbeat\HeartbeatControl.xaml.cs">
-      <DependentUpon>HeartbeatControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Heartbeat\MessageHeatbeat.cs" />
     <Compile Include="Views\Interfaces\ILogViewer.cs" />
     <Compile Include="Views\Interfaces\ILogViewerToolbarButton.cs" />
     <Compile Include="Views\Interfaces\IViewInformation.cs" />
@@ -448,10 +444,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Gui\MultipleViewFrame.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Heartbeat\HeartbeatControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -727,6 +719,7 @@
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
   </Target>
