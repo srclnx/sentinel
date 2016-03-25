@@ -1,4 +1,4 @@
-﻿namespace nLog4Tester
+﻿namespace NLog4Tester
 {
     using System;
     using System.Collections.Generic;
@@ -28,12 +28,12 @@
                                                                "Kernel32"
                                                            };
 
-        static void Main(string[] args)
+        public static void Main()
         {
             const int SmallestSleep = 1000;
             const int BiggestSleep = 2000;
 
-            for (var i=0;;i++)
+            for (var i = 0; ; i++)
             {
                 // Randomly generate a message:
                 var text = RandomMessage(i);
@@ -42,9 +42,8 @@
                 LogMessage(text);
 
                 Thread.Sleep(Random.Next(SmallestSleep, BiggestSleep));
-            }  
+            }
         }
-
 
         private static void LogMessage(string text)
         {

@@ -15,12 +15,6 @@
 
         public int Port { get; set; }
 
-        public override string Summary
-        {
-            get
-            {
-                return $"{Name}: Listens on {Protocol} port {Port}";
-            }
-        }
+        public override string Summary => $"{Name}: Listens on {Protocol} port {Port}";
     }
 }

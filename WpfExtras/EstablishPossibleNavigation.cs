@@ -17,23 +17,23 @@
         }
 
         /// <summary>
-        /// The first node located, should always be the original node upon which "Accept"
+        /// Gets the first node located, should always be the original node upon which "Accept"
         /// was called.
         /// </summary>
         public IWizardPage First { get; private set; }
 
         /// <summary>
-        /// Last node found.
+        /// Gets the last node found.
         /// </summary>
         public IWizardPage Last { get; private set; }
 
         /// <summary>
-        /// Node immediately after found item.
+        /// Gets the node immediately after found item.
         /// </summary>
         public IWizardPage Next { get; private set; }
 
         /// <summary>
-        /// Node immediately before found item.
+        /// Gets the node immediately before found item.
         /// </summary>
         public IWizardPage Previous => found ? previous : null;
 

@@ -24,7 +24,10 @@
                 DisplayBanner(options);
 
                 // TODO: pass this on the command line
-                var eventLog = new EventLog { Log = "Application" };
+                var eventLog = new EventLog
+                                   {
+                                       Log = "Application"
+                                   };
 
                 eventLog.EntryWritten += NewLogEntryWrittenHandler;
                 eventLog.EnableRaisingEvents = true;
@@ -35,7 +38,6 @@
                     Console.WriteLine("Press any key to exit...");
                     Console.ReadKey();
                 }
-
             }
         }
 

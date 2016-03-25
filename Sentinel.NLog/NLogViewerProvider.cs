@@ -19,10 +19,10 @@
 
     public class NLogViewerProvider : INetworkProvider
     {
-        private const int PumpFrequency = 100;
-
         public static readonly IProviderRegistrationRecord ProviderRegistrationInformation =
             new ProviderRegistrationInformation(new ProviderInfo());
+
+        private const int PumpFrequency = 100;
 
         private static readonly DateTime Log4JDateBase = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -209,7 +209,7 @@
 
         private LogEntry DecodeEntry(string m)
         {
-            // Record the current date/time 
+            // Record the current date/time
             var receivedTime = DateTime.UtcNow;
 
             XNamespace log4J = "unique";

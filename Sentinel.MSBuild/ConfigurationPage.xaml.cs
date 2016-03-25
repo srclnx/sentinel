@@ -64,6 +64,7 @@
             {
                 return isValid;
             }
+
             private set
             {
                 if (isValid != value)

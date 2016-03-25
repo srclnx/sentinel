@@ -1,4 +1,4 @@
-﻿namespace nLog1Tester
+﻿namespace NLog1Tester
 {
     using System;
     using System.Threading;

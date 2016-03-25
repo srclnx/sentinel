@@ -23,8 +23,6 @@ namespace Sentinel.MSBuild
         public static readonly IProviderRegistrationRecord ProviderRegistrationRecord =
             new ProviderRegistrationInformation(new ProviderInfo());
 
-        protected readonly Queue<string> PendingQueue = new Queue<string>();
-
         private const int PumpFrequency = 100;
 
         private static readonly ILog Log = LogManager.GetLogger<MsBuildProvider>();
@@ -40,7 +38,7 @@ namespace Sentinel.MSBuild
             Settings = settings as IMsBuildListenerSettings;
             Settings.ThrowIfNull(nameof(Settings));
 
-            ProviderSettings = settings; 
+            ProviderSettings = settings;
         }
 
         public IProviderInfo Information { get; private set; }
@@ -56,6 +54,8 @@ namespace Sentinel.MSBuild
         public int Port { get; private set; }
 
         protected IMsBuildListenerSettings Settings { get; set; }
+
+        protected Queue<string> PendingQueue { get; } = new Queue<string>();
 
         public void Start()
         {
@@ -212,7 +212,7 @@ namespace Sentinel.MSBuild
                         var msbuildEventType = property.Name;
                         var content = property.Value as JObject;
 
-                        if ( string.IsNullOrWhiteSpace(msbuildEventType) || content == null)
+                        if (string.IsNullOrWhiteSpace(msbuildEventType) || content == null)
                         {
                             Log.ErrorFormat(
                                 "Expected payload to consist of a property corresponding to the MSBuild event type name, "

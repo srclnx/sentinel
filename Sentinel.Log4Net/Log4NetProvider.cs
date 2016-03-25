@@ -23,8 +23,6 @@
         public static readonly IProviderRegistrationRecord ProviderRegistrationInformation =
             new ProviderRegistrationInformation(new ProviderInfo());
 
-        protected readonly Queue<string> PendingQueue = new Queue<string>();
-
         private const int PumpFrequency = 100;
 
         private static readonly XmlNamespaceManager NamespaceManager = new XmlNamespaceManager(new NameTable());
@@ -68,6 +66,8 @@
         public bool IsActive => udpListenerTask != null && udpListenerTask.Status == TaskStatus.Running;
 
         public int Port { get; private set; }
+
+        protected Queue<string> PendingQueue { get; } = new Queue<string>();
 
         public void Start()
         {
@@ -213,10 +213,9 @@
 
         private ILogEntry DeserializeMessage(string message)
         {
-
             try
             {
-                // Record the current date/time 
+                // Record the current date/time
                 var receivedTime = DateTime.UtcNow;
 
                 var payload = $@"<entry xmlns:log4net=""{log4Net}"">{message}</entry>";

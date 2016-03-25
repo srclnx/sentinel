@@ -19,6 +19,9 @@
         private readonly ObservableCollection<IWizardPage> children = new ObservableCollection<IWizardPage>();
 
         private readonly ReadOnlyObservableCollection<IWizardPage> readonlyChildren;
+
+        private bool showCustomWarning = false;
+
         private int selectedDecoderIndex;
 
         private IWizardPage customPage = null;
@@ -39,6 +42,8 @@
                                  };
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public IEnumerable<string> DecodingStyles
         {
             get;
@@ -51,15 +56,16 @@
             {
                 return selectedDecoderIndex;
             }
+
             set
             {
-                if (selectedDecoderIndex == value) return;
-                selectedDecoderIndex = value;
-                OnPropertyChanged("SelectedDecoderIndex");
+                if (selectedDecoderIndex != value)
+                {
+                    selectedDecoderIndex = value;
+                    OnPropertyChanged("SelectedDecoderIndex");
+                }
             }
         }
-
-        private bool showCustomWarning = false;
 
         public bool ShowCustomWarning
         {
@@ -78,57 +84,17 @@
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public string Title => "Message Part Identification";
 
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                PropertyChangedEventArgs e = new PropertyChangedEventArgs(propertyName);
-                handler(this, e);
-            }
-        }
+        public ReadOnlyObservableCollection<IWizardPage> Children => readonlyChildren;
 
-        public string Title
-        {
-            get
-            {
-                return "Message Part Identification";
-            }
-        }
+        public string Description => "Define how the entries in the log file are categorised.";
 
-        public ReadOnlyObservableCollection<IWizardPage> Children
-        {
-            get
-            {
-                return readonlyChildren;
-            }
-        }
+        public bool IsValid => true;
 
-        public string Description
-        {
-            get
-            {
-                return "Define how the entries in the log file are categorised.";
-            }
-        }
+        public Control PageContent => this;
 
-        public bool IsValid
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public Control PageContent
-        {
-            get
-            {
-                return this;
-            }
-        }
+        protected bool IsCustom => SelectedDecoderIndex == DecodingStyles.Count() - 1;
 
         public void AddChild(IWizardPage newItem)
         {
@@ -149,7 +115,7 @@
 
             IFileMonitoringProviderSettings settings = saveData as IFileMonitoringProviderSettings;
 
-            if ( settings != null )
+            if (settings != null)
             {
                 if (!IsCustom)
                 {
@@ -160,17 +126,19 @@
             return saveData;
         }
 
-        protected bool IsCustom
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            get
+            var handler = PropertyChanged;
+            if (handler != null)
             {
-                return SelectedDecoderIndex == DecodingStyles.Count() - 1;
+                var e = new PropertyChangedEventArgs(propertyName);
+                handler(this, e);
             }
         }
 
         private string GetDecoder()
         {
-            switch ( SelectedDecoderIndex )
+            switch (SelectedDecoderIndex)
             {
                 case 0:
                     return "^(?<DateTime>[^|]+)\\|(?<Type>[^|]+)\\|(?<Logger>[^|]+)\\|(?<Description>[^$]*)$";

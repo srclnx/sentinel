@@ -23,9 +23,6 @@
 
         private static readonly ILog Log = LogManager.GetLogger(nameof(FileMonitoringProvider));
 
-        public static IProviderRegistrationRecord ProviderRegistrationInformation { get; } =
-            new ProviderRegistrationInformation(new ProviderInfo());
-
         private readonly bool loadExistingContent;
 
         private readonly Regex patternMatching;
@@ -36,15 +33,11 @@
 
         private readonly List<string> usedGroupNames = new List<string>();
 
-        private BackgroundWorker Worker { get; set; } = new BackgroundWorker();
-
-        private BackgroundWorker PurgeWorker { get; set; } = new BackgroundWorker { WorkerReportsProgress = true };
-
         private long bytesRead;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Reliability", 
-            "CA2000: DisposeObjectsBeforeLosingScope", 
+            "Microsoft.Reliability",
+            "CA2000: DisposeObjectsBeforeLosingScope",
             Justification = "Both Worker and PurgeWorker are disposed in the IDispose implementation (or finalizer)")]
         public FileMonitoringProvider(IProviderSettings settings)
         {
@@ -54,8 +47,7 @@
 
             Debug.Assert(
                 fileSettings != null,
-                "The FileMonitoringProvider class expects configuration information "
-                + "to be of IFileMonitoringProviderSettings type");
+                "The FileMonitoringProvider class expects configuration information to be of IFileMonitoringProviderSettings type");
 
             ProviderSettings = fileSettings;
             FileName = fileSettings.FileName;
@@ -77,21 +69,9 @@
             Dispose(false);
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        public static IProviderRegistrationRecord ProviderRegistrationInformation { get; } =
+            new ProviderRegistrationInformation(new ProviderInfo());
 
-        protected virtual void Dispose(bool disposing)
-        {
-            Worker?.Dispose();
-            Worker = null;
-            PurgeWorker?.Dispose();
-            PurgeWorker = null;
-        }
-
-        // ReSharper disable once MemberCanBePrivate.Global used from view
         public string FileName { get; }
 
         public IProviderInfo Information { get; }
@@ -103,6 +83,10 @@
         public string Name { get; set; }
 
         public bool IsActive => Worker.IsBusy;
+
+        private BackgroundWorker Worker { get; set; } = new BackgroundWorker();
+
+        private BackgroundWorker PurgeWorker { get; set; } = new BackgroundWorker { WorkerReportsProgress = true };
 
         public void Start()
         {
@@ -124,6 +108,12 @@
             PurgeWorker.CancelAsync();
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         public void Pause()
         {
             if (Worker != null)
@@ -131,6 +121,14 @@
                 // TODO: need a better pause mechanism...
                 Close();
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Worker?.Dispose();
+            Worker = null;
+            PurgeWorker?.Dispose();
+            PurgeWorker = null;
         }
 
         private void PurgeWorkerDoWork(object sender, DoWorkEventArgs e)
@@ -275,6 +273,7 @@
                                 "Failed to parse date {0}",
                                 m.Groups["DateTime"].Value));
                     }
+
                     entry.DateTime = dt;
                 }
 

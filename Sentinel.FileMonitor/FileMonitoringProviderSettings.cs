@@ -23,7 +23,7 @@
         public string FileName { get; private set; }
 
         /// <summary>
-        /// Reference back to the provider this setting is appropriate to.
+        /// Gets the reference back to the provider this setting is appropriate to.
         /// </summary>
         public IProviderInfo Info { get; private set; }
 

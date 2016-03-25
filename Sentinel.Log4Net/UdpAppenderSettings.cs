@@ -24,7 +24,7 @@ namespace Sentinel.Log4Net
 
         public int Port
         {
-            get; 
+            get;
             set;
         }
     }

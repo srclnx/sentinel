@@ -23,10 +23,6 @@
 
         private bool isUdp = true;
 
-        public virtual bool SupportsTcp => true;
-
-        public virtual bool SupportsUdp => true;
-
         public NetworkConfigurationPage()
         {
             InitializeComponent();
@@ -35,20 +31,16 @@
             Children = new ReadOnlyObservableCollection<IWizardPage>(children);
 
             // Register to self so that we can handler user interactions.
-            PropertyChanged += SelectProviderPage_PropertyChanged;
+            PropertyChanged += SelectProviderPagePropertyChanged;
 
             Port = 9999;
         }
 
-        private void SelectProviderPage_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Port")
-            {
-                bool state = port > 2000;
-                Trace.WriteLine($"Setting PageValidates to {state}");
-                IsValid = state;
-            }
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public virtual bool SupportsUdp => true;
+
+        public virtual bool SupportsTcp => true;
 
         public int Port
         {
@@ -56,25 +48,31 @@
             {
                 return port;
             }
+
             set
             {
-                if (port == value) return;
-                port = value;
-                OnPropertyChanged("Port");
+                if (port != value)
+                {
+                    port = value;
+                    OnPropertyChanged("Port");
+                }
             }
         }
-					
+
         public bool IsUdp
         {
             get
             {
                 return isUdp;
             }
+
             set
             {
-                if (isUdp == value) return;
-                isUdp = value;
-                OnPropertyChanged("IsUdp");
+                if (isUdp != value)
+                {
+                    isUdp = value;
+                    OnPropertyChanged("IsUdp");
+                }
             }
         }
 
@@ -93,9 +91,11 @@
 
             private set
             {
-                if (isValid == value) return;
-                isValid = value;
-                OnPropertyChanged("IsValid");
+                if (isValid != value)
+                {
+                    isValid = value;
+                    OnPropertyChanged("IsValid");
+                }
             }
         }
 
@@ -129,8 +129,6 @@
                        };
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;
@@ -138,6 +136,16 @@
             {
                 var e = new PropertyChangedEventArgs(propertyName);
                 handler(this, e);
+            }
+        }
+
+        private void SelectProviderPagePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Port")
+            {
+                var state = port > 2000;
+                Trace.WriteLine($"Setting PageValidates to {state}");
+                IsValid = state;
             }
         }
 
