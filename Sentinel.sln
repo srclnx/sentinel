@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel", "Sentinel\Sentinel.csproj", "{152376B9-4CED-4671-9CCB-6BD9F06A1E0D}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4NetTester", "Log4NetTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfExtras", "WpfExtras\WpfExtras.csproj", "{1DD6CD3B-E53D-4770-97C9-6A5B0B551E89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nLog1Tester", "nLog1Tester\nLog1Tester.csproj", "{44D1E267-AE99-43BE-B824-980B4ABFF9CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog1Tester", "nLog1Tester\NLog1Tester.csproj", "{44D1E267-AE99-43BE-B824-980B4ABFF9CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Log4Net", "Sentinel.Log4Net\Sentinel.Log4Net.csproj", "{54F01DDC-4CFA-46F0-9BF7-52A23F3302DA}"
 EndProject
@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.NLog", "Sentinel.N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog3Tester", "NLog3Tester\NLog3Tester.csproj", "{26533F90-3677-4565-84AE-928BCFDC7DFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nLog4Tester", "nLog4Tester\nLog4Tester.csproj", "{6E02A1CC-CFC2-48CD-95F5-3C0856AB9FF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog4Tester", "nLog4Tester\NLog4Tester.csproj", "{6E02A1CC-CFC2-48CD-95F5-3C0856AB9FF7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.EventLogMonitor", "Sentinel.EventLogMonitor\Sentinel.EventLogMonitor.csproj", "{3F2AF0E8-2B22-45C5-AB62-27C42C506325}"
 EndProject

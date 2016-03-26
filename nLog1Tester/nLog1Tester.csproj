@@ -8,8 +8,8 @@
     <ProjectGuid>{44D1E267-AE99-43BE-B824-980B4ABFF9CA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>nLog1Tester</RootNamespace>
-    <AssemblyName>nLog1Tester</AssemblyName>
+    <RootNamespace>NLog1Tester</RootNamespace>
+    <AssemblyName>NLog1Tester</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -24,7 +24,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <CodeAnalysisRuleSet>..\Sentinel\Sentinel.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\nLog1Tester.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\NLog1Tester.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

@@ -7,8 +7,8 @@
     <ProjectGuid>{6E02A1CC-CFC2-48CD-95F5-3C0856AB9FF7}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>nLog4Tester</RootNamespace>
-    <AssemblyName>nLog4Tester</AssemblyName>
+    <RootNamespace>NLog4Tester</RootNamespace>
+    <AssemblyName>NLog4Tester</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -23,7 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\Sentinel\Sentinel.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\nLog4Tester.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\NLog4Tester.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
