@@ -14,6 +14,7 @@
             {
                 throw new ArgumentNullException(nameof(classifier));
             }
+
             var service = ServiceLocator.Instance.Get<IClassifyingService<IClassifier>>();
 
             if (service != null)

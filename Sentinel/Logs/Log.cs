@@ -14,10 +14,6 @@ namespace Sentinel.Logs
     {
         private readonly IClassifyingService<IClassifier> classifier;
 
-        public IEnumerable<ILogEntry> Entries { get; } = new List<ILogEntry>();
-
-        public IEnumerable<ILogEntry> NewEntries { get; } = new List<ILogEntry>();
-
         private bool enabled = true;
 
         private string name;
@@ -29,6 +25,10 @@ namespace Sentinel.Logs
             // Observe the NewEntries to maintain a full history.
             PropertyChanged += OnPropertyChanged;
         }
+
+        public IEnumerable<ILogEntry> Entries { get; } = new List<ILogEntry>();
+
+        public IEnumerable<ILogEntry> NewEntries { get; } = new List<ILogEntry>();
 
         public bool Enabled
         {
