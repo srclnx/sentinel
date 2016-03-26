@@ -106,7 +106,7 @@
                 }
             }
 
-            InitialiseToolbar();
+            InitialiseToolBar();
         }
 
         public ObservableCollection<ILogEntry> Messages { get; private set; }
@@ -176,7 +176,7 @@
         /// </summary>
         public string Name => Info.Name;
 
-        public IEnumerable<ILogViewerToolbarButton> ToolbarItems { get; private set; }
+        public IEnumerable<ILogViewerToolBarButton> ToolBarItems { get; private set; }
 
         public ILogger Logger
         {
@@ -211,9 +211,9 @@
             logger.Enabled = !logger.Enabled;
         }
 
-        private void InitialiseToolbar()
+        private void InitialiseToolBar()
         {
-            var autoscrollButton = new LogViewerToolbarButton(
+            var autoscrollButton = new LogViewerToolBarButton(
                 "Auto-Scroll",
                 "Automatically scroll to show the newest entry",
                 true,
@@ -223,26 +223,26 @@
                                            ImageIdentifier = "ScrollDown"
                                        };
 
-            var clearButton = new LogViewerToolbarButton(
+            var clearButton = new LogViewerToolBarButton(
                 "Clear",
                 "Clear the log messages from the display",
                 false,
                 new DelegateCommand(e => clearPending = true)) { ImageIdentifier = "Clear" };
 
-            var pauseButton = new LogViewerToolbarButton(
+            var pauseButton = new LogViewerToolBarButton(
                 "Pause",
                 "Pause the addition of messages to the display",
                 true,
                 new DelegateCommand(PauseMessagesHandler)) { IsChecked = false, ImageIdentifier = "Pause" };
 
-            var toolbar = new ObservableCollection<ILogViewerToolbarButton>
+            var toolBar = new ObservableCollection<ILogViewerToolBarButton>
                               {
                                   autoscrollButton,
                                   clearButton,
                                   pauseButton
                               };
 
-            ToolbarItems = toolbar;
+            ToolBarItems = toolBar;
         }
 
         /// <summary>
@@ -396,7 +396,7 @@
             }
             else if (e.PropertyName == "Enabled")
             {
-                var pauseButton = ToolbarItems.FirstOrDefault(c => c.Label == "Pause");
+                var pauseButton = ToolBarItems.FirstOrDefault(c => c.Label == "Pause");
                 if (pauseButton != null)
                 {
                     pauseButton.IsChecked = !logger.Enabled;

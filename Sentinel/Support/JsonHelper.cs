@@ -16,13 +16,13 @@ namespace Sentinel.Support
                                                                           TypeNameHandling = TypeNameHandling.All
                                                                       };
 
-        public static void SerializeToFile<T>(T objectToSerialize, string filename)
+        public static void SerializeToFile<T>(T objectToSerialize, string fileName)
         {
             try
             {
                 var objectString = JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented, Settings);
 
-                var fi = new FileInfo(filename);
+                var fi = new FileInfo(fileName);
                 Stream fs = null;
                 try
                 {
@@ -58,11 +58,11 @@ namespace Sentinel.Support
             }
         }
 
-        public static T DeserializeFromFile<T>(string filename)
+        public static T DeserializeFromFile<T>(string fileName)
         {
             try
             {
-                var fi = new FileInfo(filename);
+                var fi = new FileInfo(fileName);
 
                 if (fi.Exists)
                 {
@@ -85,7 +85,7 @@ namespace Sentinel.Support
             }
             catch (Exception e)
             {
-                Log.Error($"Exception when trying to de-serialize from {filename}", e);
+                Log.Error($"Exception when trying to de-serialize from {fileName}", e);
             }
 
             return default(T);

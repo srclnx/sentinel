@@ -2,7 +2,7 @@
 {
     using System.Windows.Input;
 
-    public interface ILogViewerToolbarButton
+    public interface ILogViewerToolBarButton
     {
         string Tooltip { get; }
 

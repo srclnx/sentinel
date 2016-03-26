@@ -44,11 +44,11 @@
                      Grid.ColumnSpan="2"
                      x:Name="toolBarPanel1">
            
-            <Wpf:DataBoundToolbar x:Name="PrimaryToolbar"
-                                  ItemsSource="{Binding PrimaryView.ToolbarItems}"
+            <Wpf:DataBoundToolBar x:Name="PrimaryToolBar"
+                                  ItemsSource="{Binding PrimaryView.ToolBarItems}"
                                   Width="Auto"
                                   HorizontalContentAlignment="Center">
-                <Wpf:DataBoundToolbar.ItemTemplate>
+                <Wpf:DataBoundToolBar.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <!-- Can be either a button or checkbox, define both and show/collapse on the DataTrigger -->
@@ -105,8 +105,8 @@
                         </DataTemplate.Triggers>
                         
                     </DataTemplate>
-                </Wpf:DataBoundToolbar.ItemTemplate>
-            </Wpf:DataBoundToolbar>
+                </Wpf:DataBoundToolBar.ItemTemplate>
+            </Wpf:DataBoundToolBar>
 
             <!--<ToolBar Header="Search : "
                      Width="Auto"

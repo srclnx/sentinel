@@ -250,7 +250,7 @@
     <Compile Include="Support\Converters\TypeToMediumImageConverter.cs" />
     <Compile Include="Support\Converters\TypeToSmallImageConverter.cs" />
     <Compile Include="Support\JsonHelper.cs" />
-    <Compile Include="Support\Wpf\DataBoundToolbar.cs" />
+    <Compile Include="Support\Wpf\DataBoundToolBar.cs" />
     <Compile Include="Support\Wpf\FixedWidthColumn.cs" />
     <Compile Include="Support\Wpf\ObservableDictionary.cs" />
     <Compile Include="Support\Wpf\ThemeInfo.cs" />
@@ -258,13 +258,13 @@
     <Compile Include="Views\Gui\LogMessagesControl.xaml.cs">
       <DependentUpon>LogMessagesControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Gui\LogViewerToolbarButton.cs" />
+    <Compile Include="Views\Gui\LogViewerToolBarButton.cs" />
     <Compile Include="Views\Gui\MultipleViewFrame.xaml.cs">
       <DependentUpon>MultipleViewFrame.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Gui\ViewInformation.cs" />
     <Compile Include="Views\Interfaces\ILogViewer.cs" />
-    <Compile Include="Views\Interfaces\ILogViewerToolbarButton.cs" />
+    <Compile Include="Views\Interfaces\ILogViewerToolBarButton.cs" />
     <Compile Include="Views\Interfaces\IViewInformation.cs" />
     <Compile Include="Views\Interfaces\IViewManager.cs" />
     <Compile Include="Views\Interfaces\IWindowFrame.cs" />

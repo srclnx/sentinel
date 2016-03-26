@@ -18,7 +18,7 @@ namespace Sentinel.Views.Interfaces
 
         string Status { get; }
 
-        IEnumerable<ILogViewerToolbarButton> ToolbarItems { get; }
+        IEnumerable<ILogViewerToolBarButton> ToolBarItems { get; }
 
         void SetLogger(ILogger newLogger);
     }

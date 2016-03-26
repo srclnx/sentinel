@@ -3,7 +3,7 @@
     using System.Windows.Controls;
     using System.Windows.Threading;
 
-    public class DataBoundToolbar : ToolBar
+    public class DataBoundToolBar : ToolBar
     {
         private delegate void InvalidateMeasurementDelegate();
 

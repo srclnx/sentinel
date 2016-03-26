@@ -7,14 +7,14 @@
 
     using WpfExtras;
 
-    public class LogViewerToolbarButton
-        : ViewModelBase, ILogViewerToolbarButton
+    public class LogViewerToolBarButton
+        : ViewModelBase, ILogViewerToolBarButton
     {
         private string imageIdentifier;
 
         private bool isChecked;
 
-        public LogViewerToolbarButton(
+        public LogViewerToolBarButton(
             string label,
             string toolTip,
             bool checkable,
