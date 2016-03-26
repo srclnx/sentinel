@@ -288,7 +288,7 @@
                     entry.System = m.Groups[LoggerIdentifier].Value;
                 }
 
-                entry.MetaData = new Dictionary<string, object>
+                entry.Metadata = new Dictionary<string, object>
                                      {
                                          { "Classification", string.Empty },
                                          { "Host", FileName }
@@ -296,7 +296,7 @@
 
                 if (entry.Description.ToUpper(CultureInfo.InvariantCulture).Contains("EXCEPTION"))
                 {
-                    entry.MetaData.Add("Exception", true);
+                    entry.Metadata.Add("Exception", true);
                 }
 
                 pendingQueue.Enqueue(entry);

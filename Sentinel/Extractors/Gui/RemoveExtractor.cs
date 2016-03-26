@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Extractors.Gui
 {
+    using System;
     using System.Windows;
 
     using Sentinel.Extractors.Interfaces;
@@ -10,6 +11,11 @@
     {
         public void Remove(IExtractor extractor)
         {
+            if (extractor == null)
+            {
+                throw new ArgumentNullException(nameof(extractor));
+            }
+
             var service = ServiceLocator.Instance.Get<IExtractingService<IExtractor>>();
 
             if (service != null)

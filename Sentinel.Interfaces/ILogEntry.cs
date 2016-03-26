@@ -39,6 +39,6 @@ namespace Sentinel.Interfaces
         /// <summary>
         /// Gets or sets the dictionary of any meta-data that doesn't fit into the above values.
         /// </summary>
-        Dictionary<string, object> MetaData { get; set; }
+        Dictionary<string, object> Metadata { get; set; }
     }
 }

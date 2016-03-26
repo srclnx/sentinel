@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Logs
 {
+    using System;
     using System.IO;
     using System.Text;
 
@@ -14,6 +15,11 @@
 
         public void SaveLogViewerToFile(IWindowFrame windowFrame, string filePath)
         {
+            if (windowFrame == null)
+            {
+                throw new ArgumentNullException(nameof(windowFrame));
+            }
+
             // Check if file exists; delete it
             if (File.Exists(filePath))
             {

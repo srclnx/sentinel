@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Classification
 {
+    using System;
     using System.Diagnostics;
     using System.Runtime.Serialization;
     using System.Text.RegularExpressions;
@@ -192,11 +193,14 @@
 
         public ILogEntry Classify(ILogEntry logEntry)
         {
-            Debug.Assert(logEntry != null, "logEntry can not be null.");
+            if (logEntry == null)
+            {
+                throw new ArgumentNullException(nameof(logEntry));
+            }
 
             if (IsMatch(logEntry))
             {
-                logEntry.MetaData["Classification"] = Type;
+                logEntry.Metadata["Classification"] = Type;
                 logEntry.Type = Type;
             }
 
@@ -205,7 +209,10 @@
 
         public bool IsMatch(ILogEntry logEntry)
         {
-            Debug.Assert(logEntry != null, "logEntry can not be null.");
+            if (logEntry == null)
+            {
+                throw new ArgumentNullException(nameof(logEntry));
+            }
 
             if (string.IsNullOrWhiteSpace(Pattern))
             {

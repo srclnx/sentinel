@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Extractors
 {
+    using System;
     using System.Diagnostics;
     using System.Globalization;
     using System.Runtime.InteropServices.WindowsRuntime;
@@ -154,7 +155,10 @@
 
         public bool IsMatch(ILogEntry logEntry)
         {
-            Debug.Assert(logEntry != null, "LogEntry can not be null.");
+            if (logEntry == null)
+            {
+                throw new ArgumentNullException(nameof(logEntry));
+            }
 
             if (string.IsNullOrWhiteSpace(Pattern))
             {

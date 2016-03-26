@@ -1,5 +1,6 @@
 namespace Sentinel.Images
 {
+    using System;
     using System.Windows;
 
     using Sentinel.Images.Interfaces;
@@ -9,6 +10,11 @@ namespace Sentinel.Images
     {
         public void Remove(ImageTypeRecord typeImageRecord)
         {
+            if (typeImageRecord == null)
+            {
+                throw new ArgumentNullException(nameof(typeImageRecord));
+            }
+
             var service = ServiceLocator.Instance.Get<ITypeImageService>();
 
             if (service != null)

@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Interfaces
 {
+    using System;
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Diagnostics;
@@ -18,6 +19,11 @@
 
         public void AttachDetach(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException(nameof(e));
+            }
+
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (var newItem in e.NewItems)

@@ -9,6 +9,16 @@ namespace Sentinel.Support.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
             Debug.Assert(value is bool, "Value must be a boolean.");
             Debug.Assert(parameter is string, "Parameter must be a string.");
             return (bool)value ? double.Parse(parameter.ToString()) : 0.0;

@@ -1,5 +1,6 @@
 namespace Sentinel.Filters.Gui
 {
+    using System;
     using System.Windows;
 
     using Sentinel.Filters.Interfaces;
@@ -9,6 +10,11 @@ namespace Sentinel.Filters.Gui
     {
         public void Remove(IFilter filter)
         {
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
+
             var service = ServiceLocator.Instance.Get<IFilteringService<IFilter>>();
 
             if (service != null)

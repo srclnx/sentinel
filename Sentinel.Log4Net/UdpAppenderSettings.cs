@@ -1,5 +1,7 @@
 namespace Sentinel.Log4Net
 {
+    using System;
+
     using Interfaces.Providers;
 
     public class UdpAppenderSettings : IUdpAppenderListenerSettings
@@ -12,6 +14,11 @@ namespace Sentinel.Log4Net
 
         public UdpAppenderSettings(IProviderSettings providerInfo)
         {
+            if (providerInfo == null)
+            {
+                throw new ArgumentNullException(nameof(providerInfo));
+            }
+
             Name = providerInfo.Name;
             Info = providerInfo.Info;
         }

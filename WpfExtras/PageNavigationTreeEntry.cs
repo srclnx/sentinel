@@ -1,5 +1,6 @@
 ﻿namespace WpfExtras
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.ComponentModel;
@@ -13,6 +14,11 @@
 
         public PageNavigationTreeEntry(IWizardPage page)
         {
+            if (page == null)
+            {
+                throw new ArgumentNullException(nameof(page));
+            }
+
             Page = page;
 
             children = new ObservableCollection<PageNavigationTreeEntry>();

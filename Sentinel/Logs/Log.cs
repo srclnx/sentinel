@@ -14,9 +14,9 @@ namespace Sentinel.Logs
     {
         private readonly IClassifyingService<IClassifier> classifier;
 
-        private readonly List<ILogEntry> entries = new List<ILogEntry>();
+        public IEnumerable<ILogEntry> Entries { get; } = new List<ILogEntry>();
 
-        private readonly List<ILogEntry> newEntries = new List<ILogEntry>();
+        public IEnumerable<ILogEntry> NewEntries { get; } = new List<ILogEntry>();
 
         private bool enabled = true;
 
@@ -24,16 +24,11 @@ namespace Sentinel.Logs
 
         public Log()
         {
-            Entries = entries;
-            NewEntries = newEntries;
-
             classifier = ServiceLocator.Instance.Get<IClassifyingService<IClassifier>>();
 
             // Observe the NewEntries to maintain a full history.
             PropertyChanged += OnPropertyChanged;
         }
-
-        public IEnumerable<ILogEntry> Entries { get; private set; }
 
         public bool Enabled
         {
@@ -69,18 +64,16 @@ namespace Sentinel.Logs
             }
         }
 
-        public IEnumerable<ILogEntry> NewEntries { get; private set; }
-
         public void Clear()
         {
-            lock (entries)
+            lock (Entries)
             {
-                entries.Clear();
+                (Entries as List<ILogEntry>)?.Clear();
             }
 
-            lock (newEntries)
+            lock (NewEntries)
             {
-                newEntries.Clear();
+                (NewEntries as List<ILogEntry>)?.Clear();
             }
 
             OnPropertyChanged("Entries");
@@ -105,10 +98,11 @@ namespace Sentinel.Logs
                 }
             }
 
-            lock (newEntries)
+            lock (NewEntries)
             {
-                newEntries.Clear();
-                newEntries.AddRange(processed);
+                var newEntries = NewEntries as List<ILogEntry>;
+                newEntries?.Clear();
+                newEntries?.AddRange(processed);
             }
 
             OnPropertyChanged("NewEntries");
@@ -118,11 +112,11 @@ namespace Sentinel.Logs
         {
             if (e.PropertyName == "NewEntries")
             {
-                lock (newEntries)
+                lock (NewEntries)
                 {
-                    lock (entries)
+                    lock (Entries)
                     {
-                        entries.AddRange(newEntries);
+                        (Entries as List<ILogEntry>)?.AddRange(NewEntries);
                     }
 
                     OnPropertyChanged("Entries");

@@ -99,6 +99,16 @@
 
         public void Register(Type keyType, Type instanceType, bool replace)
         {
+            if (keyType == null)
+            {
+                throw new ArgumentNullException(nameof(keyType));
+            }
+
+            if (instanceType == null)
+            {
+                throw new ArgumentNullException(nameof(instanceType));
+            }
+
             Log.TraceFormat(
                 "Registering Type instance of '{0}' to signature of '{1}'",
                 instanceType.Name,

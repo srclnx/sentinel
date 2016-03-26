@@ -18,6 +18,11 @@ namespace Sentinel.Logger
         /// <param name="entries">Entries to write to text file.</param>
         public void Write(IEnumerable<ILogEntry> entries)
         {
+            if (entries == null)
+            {
+                throw new ArgumentNullException(nameof(entries));
+            }
+
             try
             {
                 using (TextWriter tw = File.CreateText("log"))

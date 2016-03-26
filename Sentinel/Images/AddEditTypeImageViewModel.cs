@@ -376,6 +376,11 @@ namespace Sentinel.Images
 
         private void LoadImageFromFileName(string fileName)
         {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentNullException(nameof(fileName));
+            }
+
             var oldImageError = imageError;
 
             try

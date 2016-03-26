@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Highlighters.Gui
 {
+    using System;
     using System.Windows;
     using System.Windows.Media;
 
@@ -30,6 +31,11 @@
 
         public Highlighter Construct(AddEditHighlighter data)
         {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             Color? background = null;
             Color? foreground = null;
 

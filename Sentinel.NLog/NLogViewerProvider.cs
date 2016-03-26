@@ -269,28 +269,27 @@
                                 Thread = record.Attribute("thread").Value,
                                 Description = description,
                                 Type = type,
-                                MetaData =
-                                    new Dictionary<string, object>
-                                        {
-                                            { "Classification", classification },
-                                            { "Host", host }
-                                        }
+                                Metadata = new Dictionary<string, object>
+                                               {
+                                                   { "Classification", classification },
+                                                   { "Host", host }
+                                               }
                             };
             if (entry.Description.ToUpper().Contains("EXCEPTION"))
             {
-                entry.MetaData.Add("Exception", true);
+                entry.Metadata.Add("Exception", true);
             }
 
             if (!string.IsNullOrWhiteSpace(className))
             {
                 // TODO: use an object for these?
-                entry.MetaData.Add("ClassName", className);
-                entry.MetaData.Add("MethodName", methodName);
-                entry.MetaData.Add("SourceFile", sourceFile);
-                entry.MetaData.Add("SourceLine", line);
+                entry.Metadata.Add("ClassName", className);
+                entry.Metadata.Add("MethodName", methodName);
+                entry.Metadata.Add("SourceFile", sourceFile);
+                entry.Metadata.Add("SourceLine", line);
             }
 
-            entry.MetaData.Add("ReceivedTime", receivedTime);
+            entry.Metadata.Add("ReceivedTime", receivedTime);
 
             return entry;
         }

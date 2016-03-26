@@ -275,13 +275,13 @@
                         line = source.Attribute("line").Value;
                     }
 
-                    var metaData = new Dictionary<string, object>
+                    var metadata = new Dictionary<string, object>
                                        {
                                            ["Classification"] = classification,
                                            ["Host"] = host
                                        };
 
-                    AddExceptionIfFound(entryEvent, metaData);
+                    AddExceptionIfFound(entryEvent, metadata);
 
                     // Extract from the source the originating date/time
                     var sourceTime = entryEvent.GetAttributeDateTime("timestamp", DateTime.Now);
@@ -293,24 +293,24 @@
                                            Thread = entryEvent.GetAttribute("thread", string.Empty),
                                            Description = description,
                                            Type = type,
-                                           MetaData = metaData
+                                           Metadata = metadata
                                        };
 
                     if (logEntry.Description.ToUpper().Contains("EXCEPTION"))
                     {
-                        logEntry.MetaData.Add("Exception", true);
+                        logEntry.Metadata.Add("Exception", true);
                     }
 
                     if (!string.IsNullOrWhiteSpace(className))
                     {
                         // TODO: use an object for these?
-                        logEntry.MetaData.Add("ClassName", className);
-                        logEntry.MetaData.Add("MethodName", methodName);
-                        logEntry.MetaData.Add("SourceFile", sourceFile);
-                        logEntry.MetaData.Add("SourceLine", line);
+                        logEntry.Metadata.Add("ClassName", className);
+                        logEntry.Metadata.Add("MethodName", methodName);
+                        logEntry.Metadata.Add("SourceFile", sourceFile);
+                        logEntry.Metadata.Add("SourceLine", line);
                     }
 
-                    logEntry.MetaData.Add("ReceivedTime", receivedTime);
+                    logEntry.Metadata.Add("ReceivedTime", receivedTime);
 
                     return logEntry;
                 }
@@ -323,16 +323,16 @@
             return null;
         }
 
-        private void AddExceptionIfFound(XElement entryEvent, Dictionary<string, object> metaData)
+        private void AddExceptionIfFound(XElement entryEvent, Dictionary<string, object> metadata)
         {
             entryEvent.ThrowIfNull(nameof(entryEvent));
 
-            metaData.ThrowIfNull(nameof(metaData));
+            metadata.ThrowIfNull(nameof(metadata));
 
             var exceptionElement = entryEvent.Element(log4Net + "exception");
             if (exceptionElement != null)
             {
-                metaData["Exception"] = exceptionElement.Value;
+                metadata["Exception"] = exceptionElement.Value;
             }
         }
 

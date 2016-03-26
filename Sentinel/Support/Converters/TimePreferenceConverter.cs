@@ -41,7 +41,7 @@ namespace Sentinel.Support.Converters
             object displayDateTime = null;
             if (Preferences.UseArrivalDateTime)
             {
-                message.MetaData.TryGetValue("ReceivedTime", out displayDateTime);
+                message.Metadata.TryGetValue("ReceivedTime", out displayDateTime);
             }
 
             // Fallback if message does not contain meta-data.

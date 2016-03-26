@@ -1,5 +1,6 @@
 namespace Sentinel.Images
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Linq;
@@ -64,6 +65,11 @@ namespace Sentinel.Images
 
         public void Register(string type, ImageQuality quality, string image)
         {
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             Debug.Assert(quality != ImageQuality.BestAvailable, "Must use a specific size when registering");
 
             var typeName = type.ToUpper();

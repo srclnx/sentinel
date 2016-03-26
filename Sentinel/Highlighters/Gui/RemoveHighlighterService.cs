@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Highlighters.Gui
 {
+    using System;
     using System.Windows;
 
     using Sentinel.Highlighters.Interfaces;
@@ -9,6 +10,11 @@
     {
         public void Remove(IHighlighter highlighter)
         {
+            if (highlighter == null)
+            {
+                throw new ArgumentNullException(nameof(highlighter));
+            }
+
             var service = ServiceLocator.Instance.Get<IHighlightingService<IHighlighter>>();
             if (service == null)
             {

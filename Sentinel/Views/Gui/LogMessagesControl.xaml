@@ -15,7 +15,7 @@
         <Converters:TypeToSmallImageConverter x:Key="TypeToImageConverter" />
         <Converters:BooleanToWidthConverter x:Key="BooleanToWidthConverter" />
         <Converters:MessageHasExceptionMetadataConverter x:Key="MessageHasExceptionMetadata" />
-        <Converters:MetaDataConverter x:Key="MetaDataConverter" />
+        <Converters:MetadataConverter x:Key="MetadataConverter" />
         <Style TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment"
                     Value="Stretch" />
@@ -82,7 +82,7 @@
                                                DisplayMemberBinding="{Binding Thread}" />
                     <GridViewColumn Header="Host"
                                     Width="{Binding Preferences.ShowSourceColumn, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=100}"
-                                    DisplayMemberBinding="{Binding MetaData, Converter={StaticResource MetaDataConverter}, ConverterParameter='Host'}" />
+                                    DisplayMemberBinding="{Binding Metadata, Converter={StaticResource MetadataConverter}, ConverterParameter='Host'}" />
                     <GridViewColumn Header="System"
                                     DisplayMemberBinding="{Binding System}" />
                     <Controls:FixedWidthColumn FixedWidth="{Binding Preferences.ShowExceptionColumn, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=30}">
@@ -119,16 +119,16 @@
                                     DisplayMemberBinding="{Binding Description}" />
                     <GridViewColumn Header="Source File"
                                     Width="{Binding Preferences.ShowSourceInformationColumns, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=130}"
-                                    DisplayMemberBinding="{Binding MetaData, Converter={StaticResource MetaDataConverter}, ConverterParameter='SourceFile'}" />
+                                    DisplayMemberBinding="{Binding Metadata, Converter={StaticResource MetadataConverter}, ConverterParameter='SourceFile'}" />
                     <GridViewColumn Width="{Binding Preferences.ShowSourceInformationColumns, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=30}"
                                     Header="Line"
-                                    DisplayMemberBinding="{Binding MetaData, Converter={StaticResource MetaDataConverter}, ConverterParameter='SourceLine'}" />
+                                    DisplayMemberBinding="{Binding Metadata, Converter={StaticResource MetadataConverter}, ConverterParameter='SourceLine'}" />
                     <GridViewColumn Width="{Binding Preferences.ShowSourceInformationColumns, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=130}"
                                     Header="Class"
-                                    DisplayMemberBinding="{Binding MetaData, Converter={StaticResource MetaDataConverter}, ConverterParameter='ClassName'}" />
+                                    DisplayMemberBinding="{Binding Metadata, Converter={StaticResource MetadataConverter}, ConverterParameter='ClassName'}" />
                     <GridViewColumn Width="{Binding Preferences.ShowSourceInformationColumns, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=130}"
                                     Header="Method"
-                                    DisplayMemberBinding="{Binding MetaData, Converter={StaticResource MetaDataConverter}, ConverterParameter='MethodName'}" />
+                                    DisplayMemberBinding="{Binding Metadata, Converter={StaticResource MetadataConverter}, ConverterParameter='MethodName'}" />
                 </GridView>
             </ListView.View>
         </ListView>

@@ -1,5 +1,6 @@
 namespace Sentinel.Highlighters.Gui
 {
+    using System;
     using System.Diagnostics;
     using System.Windows;
     using System.Windows.Media;
@@ -11,7 +12,10 @@ namespace Sentinel.Highlighters.Gui
     {
         public void Edit(IHighlighter highlighter)
         {
-            Debug.Assert(highlighter != null, "Highlighter must be supplied for editing.");
+            if (highlighter == null)
+            {
+                throw new ArgumentNullException(nameof(highlighter));
+            }
 
             var window = new AddEditHighlighterWindow();
             var data = new AddEditHighlighter(window, false);

@@ -1,5 +1,6 @@
 namespace Sentinel.Filters.Gui
 {
+    using System;
     using System.Diagnostics;
     using System.Windows;
 
@@ -9,7 +10,10 @@ namespace Sentinel.Filters.Gui
     {
         public void Edit(IFilter filter)
         {
-            Debug.Assert(filter != null, "Filter must be supplied to allow editing.");
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
 
             var window = new AddEditFilterWindow();
             var data = new AddEditFilter(window, true);

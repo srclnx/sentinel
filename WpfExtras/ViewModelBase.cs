@@ -63,6 +63,11 @@
         [DebuggerStepThrough]
         public void VerifyPropertyName(string propertyName)
         {
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
             if (!string.IsNullOrEmpty(propertyName))
             {
                 // Verify that the property name matches a real,

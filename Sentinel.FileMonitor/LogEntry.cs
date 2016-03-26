@@ -41,6 +41,6 @@ namespace Sentinel.FileMonitor
         /// <summary>
         /// Gets or sets the dictionary of any meta-data that doesn't fit into the above values.
         /// </summary>
-        public Dictionary<string, object> MetaData { get; set; }
+        public Dictionary<string, object> Metadata { get; set; }
     }
 }

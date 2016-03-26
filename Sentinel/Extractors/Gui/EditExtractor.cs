@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Extractors.Gui
 {
+    using System;
     using System.Diagnostics;
     using System.Windows;
 
@@ -9,7 +10,10 @@
     {
         public void Edit(IExtractor extractor)
         {
-            Debug.Assert(extractor != null, "Extractor must be supplied to allow editing.");
+            if (extractor == null)
+            {
+                throw new ArgumentNullException(nameof(extractor));
+            }
 
             var window = new AddEditExtractorWindow();
             var data = new AddEditExtractor(window, true);

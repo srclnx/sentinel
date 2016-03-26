@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Classification.Gui
 {
+    using System;
     using System.Windows;
 
     using Interfaces;
@@ -9,6 +10,10 @@
     {
         public void Remove(IClassifier classifier)
         {
+            if (classifier == null)
+            {
+                throw new ArgumentNullException(nameof(classifier));
+            }
             var service = ServiceLocator.Instance.Get<IClassifyingService<IClassifier>>();
 
             if (service != null)

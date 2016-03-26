@@ -26,9 +26,9 @@ namespace Sentinel.Support.Converters
         {
             object exception = null;
             var entry = value as ILogEntry;
-            if (entry?.MetaData != null)
+            if (entry?.Metadata != null)
             {
-                entry.MetaData.TryGetValue("Exception", out exception);
+                entry.Metadata.TryGetValue("Exception", out exception);
             }
 
             return exception != null;

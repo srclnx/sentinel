@@ -1,5 +1,6 @@
 namespace Sentinel.Images
 {
+    using System;
     using System.Diagnostics;
     using System.Windows;
 
@@ -11,7 +12,10 @@ namespace Sentinel.Images
     {
         public void Edit(ImageTypeRecord imageTypeRecord)
         {
-            Debug.Assert(imageTypeRecord != null, "ImageTypeRecord must be supplied to allow editing.");
+            if (imageTypeRecord == null)
+            {
+                throw new ArgumentNullException(nameof(imageTypeRecord));
+            }
 
             var service = ServiceLocator.Instance.Get<ITypeImageService>();
 

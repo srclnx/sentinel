@@ -44,10 +44,10 @@ namespace Sentinel.MSBuild
 
             if (Description.ToUpper().Contains("EXCEPTION"))
             {
-                MetaData.Add("Exception", true);
+                Metadata.Add("Exception", true);
             }
 
-            MetaData = new Dictionary<string, object> { { "Original", content } };
+            Metadata = new Dictionary<string, object> { { "Original", content } };
         }
 
         /// <summary>
@@ -84,6 +84,6 @@ namespace Sentinel.MSBuild
         /// <summary>
         /// Gets or sets the dictionary of any meta-data that doesn't fit into the above values.
         /// </summary>
-        public Dictionary<string, object> MetaData { get; set; }
+        public Dictionary<string, object> Metadata { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace Sentinel.Classification.Gui
 {
+    using System;
     using System.Diagnostics;
     using System.Windows;
 
@@ -9,7 +10,10 @@
     {
         public void Edit(IClassifier classifier)
         {
-            Debug.Assert(classifier != null, "Extractor must be supplied to allow editing.");
+            if (classifier == null)
+            {
+                throw new ArgumentNullException(nameof(classifier));
+            }
 
             var window = new AddEditClassifierWindow();
             var data = new AddEditClassifier(window, true);

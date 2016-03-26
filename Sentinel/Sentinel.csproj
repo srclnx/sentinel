@@ -243,7 +243,7 @@
     <Compile Include="Support\Converters\ImageLibraryConverter.cs" />
     <Compile Include="Support\Converters\LongPathToShortPathConverter.cs" />
     <Compile Include="Support\Converters\MessageHasExceptionMetadataConverter.cs" />
-    <Compile Include="Support\Converters\MetaDataConverter.cs" />
+    <Compile Include="Support\Converters\MetadataConverter.cs" />
     <Compile Include="Support\Converters\TimeSinceDateTimeConverter.cs" />
     <Compile Include="Support\Converters\TypeToImageConverter.cs" />
     <Compile Include="Support\Converters\TypeToLargeImageConverter.cs" />

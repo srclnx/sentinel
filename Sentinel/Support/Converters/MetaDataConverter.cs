@@ -8,19 +8,19 @@ namespace Sentinel.Support.Converters
     using Sentinel.Interfaces;
     using Sentinel.Interfaces.CodeContracts;
 
-    public class MetaDataConverter : IValueConverter
+    public class MetadataConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             value.ThrowIfNull(nameof(value));
 
             var member = parameter as string;
-            var metaData = value as IDictionary<string, object>;
+            var metadata = value as IDictionary<string, object>;
 
-            if (metaData != null && !string.IsNullOrWhiteSpace(member))
+            if (metadata != null && !string.IsNullOrWhiteSpace(member))
             {
                 object metaDataValue;
-                metaData.TryGetValue(member, out metaDataValue);
+                metadata.TryGetValue(member, out metaDataValue);
                 return metaDataValue;
             }
 

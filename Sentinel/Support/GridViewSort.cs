@@ -334,13 +334,18 @@
 
             protected override void OnRender(DrawingContext drawingContext)
             {
+                if (drawingContext == null)
+                {
+                    throw new ArgumentNullException(nameof(drawingContext));
+                }
+
                 base.OnRender(drawingContext);
 
                 if (sortGlyph != null)
                 {
-                    double x = columnHeader.ActualWidth - 13;
-                    double y = (columnHeader.ActualHeight / 2) - 5;
-                    Rect rect = new Rect(x, y, 10, 10);
+                    var x = columnHeader.ActualWidth - 13;
+                    var y = (columnHeader.ActualHeight / 2) - 5;
+                    var rect = new Rect(x, y, 10, 10);
                     drawingContext.DrawImage(sortGlyph, rect);
                 }
                 else
