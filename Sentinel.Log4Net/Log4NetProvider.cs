@@ -18,7 +18,7 @@
 
     using Sentinel.Interfaces.CodeContracts;
 
-    public class Log4NetProvider : INetworkProvider
+    public class Log4NetProvider : INetworkProvider, IDisposable
     {
         public static readonly IProviderRegistrationRecord ProviderRegistrationInformation =
             new ProviderRegistrationInformation(new ProviderInfo());
@@ -68,6 +68,15 @@
         public int Port { get; private set; }
 
         protected Queue<string> PendingQueue { get; } = new Queue<string>();
+
+        public void Dispose()
+        {
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = null;
+            }
+        }
 
         public void Start()
         {

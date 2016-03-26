@@ -17,7 +17,7 @@
 
     using Sentinel.Interfaces.CodeContracts;
 
-    public class NLogViewerProvider : INetworkProvider
+    public class NLogViewerProvider : INetworkProvider, IDisposable
     {
         public static readonly IProviderRegistrationRecord ProviderRegistrationInformation =
             new ProviderRegistrationInformation(new ProviderInfo());
@@ -58,6 +58,15 @@
         public bool IsActive => listenerTask != null && listenerTask.Status == TaskStatus.Running;
 
         public int Port { get; private set; }
+
+        public void Dispose()
+        {
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = null;
+            }
+        }
 
         public void Start()
         {

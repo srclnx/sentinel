@@ -18,7 +18,7 @@ namespace Sentinel.MSBuild
 
     using Sentinel.Interfaces.CodeContracts;
 
-    public class MsBuildProvider : INetworkProvider
+    public class MsBuildProvider : INetworkProvider, IDisposable
     {
         public static readonly IProviderRegistrationRecord ProviderRegistrationRecord =
             new ProviderRegistrationInformation(new ProviderInfo());
@@ -56,6 +56,15 @@ namespace Sentinel.MSBuild
         protected IMsBuildListenerSettings Settings { get; set; }
 
         protected Queue<string> PendingQueue { get; } = new Queue<string>();
+
+        public void Dispose()
+        {
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = null;
+            }
+        }
 
         public void Start()
         {
