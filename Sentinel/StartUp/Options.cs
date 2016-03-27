@@ -1,4 +1,4 @@
-﻿namespace Sentinel.StartUp
+﻿namespace Sentinel.Startup
 {
     using CommandLine;
 

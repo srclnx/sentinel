@@ -45,7 +45,7 @@
                 if (logName != value)
                 {
                     logName = value;
-                    OnPropertyChanged("LogName");
+                    OnPropertyChanged(nameof(LogName));
                 }
             }
         }
@@ -68,7 +68,7 @@
                 if (isValid != value)
                 {
                     isValid = value;
-                    OnPropertyChanged("IsValid");
+                    OnPropertyChanged(nameof(IsValid));
                 }
             }
         }
@@ -81,7 +81,7 @@
         /// <returns>
         /// An error message indicating what is wrong with this object. The default is an empty string ("").
         /// </returns>
-        public string Error => this["LogName"];
+        public string Error => this[nameof(LogName)];
 
         /// <summary>
         /// Gets the error message for the property with the given name.
@@ -94,7 +94,7 @@
         {
             get
             {
-                if (columnName == "LogName")
+                if (columnName == nameof(LogName))
                 {
                     if (string.IsNullOrEmpty(LogName))
                     {
@@ -125,16 +125,16 @@
             return saveData;
         }
 
-        public void AddChild(IWizardPage newItem)
+        public void AddChild(IWizardPage child)
         {
-            children.Add(newItem);
-            OnPropertyChanged("Children");
+            children.Add(child);
+            OnPropertyChanged(nameof(Children));
         }
 
-        public void RemoveChild(IWizardPage item)
+        public void RemoveChild(IWizardPage child)
         {
-            children.Remove(item);
-            OnPropertyChanged("Children");
+            children.Remove(child);
+            OnPropertyChanged(nameof(Children));
         }
 
         protected void OnPropertyChanged(string propertyName)
@@ -149,16 +149,16 @@
 
         private void PropertyChangedHandler(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "LogName")
+            if (e.PropertyName == nameof(LogName))
             {
                 // Validate against standard validation rules.
-                IsValid = this["LogName"] == null;
+                IsValid = this[nameof(LogName)] == null;
             }
         }
 
         private void PageLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            OnPropertyChanged("LogName");
+            OnPropertyChanged(nameof(LogName));
         }
     }
 }

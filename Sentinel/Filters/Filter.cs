@@ -174,11 +174,11 @@ namespace Sentinel.Filters
             }
         }
 
-        public bool IsMatch(ILogEntry logEntry)
+        public bool IsMatch(ILogEntry entry)
         {
-            Debug.Assert(logEntry != null, "LogEntry can not be null.");
+            Debug.Assert(entry != null, "LogEntry can not be null.");
 
-            if (logEntry == null)
+            if (entry == null)
             {
                 return false;
             }
@@ -196,22 +196,22 @@ namespace Sentinel.Filters
                     target = string.Empty;
                     break;
                 case LogEntryField.Type:
-                    target = logEntry.Type;
+                    target = entry.Type;
                     break;
                 case LogEntryField.System:
-                    target = logEntry.System;
+                    target = entry.System;
                     break;
                 case LogEntryField.Classification:
                     target = string.Empty;
                     break;
                 case LogEntryField.Thread:
-                    target = logEntry.Thread;
+                    target = entry.Thread;
                     break;
                 case LogEntryField.Source:
-                    target = logEntry.Source;
+                    target = entry.Source;
                     break;
                 case LogEntryField.Description:
-                    target = logEntry.Description;
+                    target = entry.Description;
                     break;
                 case LogEntryField.Host:
                     target = string.Empty;

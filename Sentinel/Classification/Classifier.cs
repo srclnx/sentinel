@@ -1,7 +1,6 @@
 ﻿namespace Sentinel.Classification
 {
     using System;
-    using System.Diagnostics;
     using System.Runtime.Serialization;
     using System.Text.RegularExpressions;
 
@@ -31,14 +30,15 @@
         {
             PropertyChanged += (sender, e) =>
                 {
-                    if (e.PropertyName == "Field" || e.PropertyName == "Mode" || e.PropertyName == "Pattern")
+                    if (e.PropertyName == nameof(Field) || e.PropertyName == nameof(Mode)
+                        || e.PropertyName == nameof(Pattern))
                     {
                         if (Mode == MatchMode.RegularExpression && Pattern != null)
                         {
                             regex = new Regex(Pattern);
                         }
 
-                        OnPropertyChanged("Description");
+                        OnPropertyChanged(nameof(Description));
                     }
                 };
         }
@@ -55,14 +55,15 @@
 
             PropertyChanged += (sender, e) =>
                 {
-                    if (e.PropertyName == "Field" || e.PropertyName == "Mode" || e.PropertyName == "Pattern")
+                    if (e.PropertyName == nameof(Field) || e.PropertyName == nameof(Mode)
+                        || e.PropertyName == nameof(Pattern))
                     {
                         if (Mode == MatchMode.RegularExpression && Pattern != null)
                         {
                             regex = new Regex(Pattern);
                         }
 
-                        OnPropertyChanged("Description");
+                        OnPropertyChanged(nameof(Description));
                     }
                 };
         }
@@ -102,7 +103,7 @@
                 if (enabled != value)
                 {
                     enabled = value;
-                    OnPropertyChanged("Enabled");
+                    OnPropertyChanged(nameof(Enabled));
                 }
             }
         }
@@ -117,7 +118,7 @@
             set
             {
                 field = value;
-                OnPropertyChanged("Field");
+                OnPropertyChanged(nameof(Field));
             }
         }
 
@@ -135,7 +136,7 @@
                 if (mode != value)
                 {
                     mode = value;
-                    OnPropertyChanged("Mode");
+                    OnPropertyChanged(nameof(Mode));
                 }
             }
         }
@@ -152,7 +153,7 @@
                 if (name != value)
                 {
                     name = value;
-                    OnPropertyChanged("Name");
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -169,7 +170,7 @@
                 if (pattern != value)
                 {
                     pattern = value;
-                    OnPropertyChanged("Pattern");
+                    OnPropertyChanged(nameof(Pattern));
                 }
             }
         }
@@ -186,32 +187,32 @@
                 if (type != value)
                 {
                     type = value;
-                    OnPropertyChanged("Type");
+                    OnPropertyChanged(nameof(Type));
                 }
             }
         }
 
-        public ILogEntry Classify(ILogEntry logEntry)
+        public ILogEntry Classify(ILogEntry entry)
         {
-            if (logEntry == null)
+            if (entry == null)
             {
-                throw new ArgumentNullException(nameof(logEntry));
+                throw new ArgumentNullException(nameof(entry));
             }
 
-            if (IsMatch(logEntry))
+            if (IsMatch(entry))
             {
-                logEntry.Metadata["Classification"] = Type;
-                logEntry.Type = Type;
+                entry.Metadata[nameof(Classification)] = Type;
+                entry.Type = Type;
             }
 
-            return logEntry;
+            return entry;
         }
 
-        public bool IsMatch(ILogEntry logEntry)
+        public bool IsMatch(ILogEntry entry)
         {
-            if (logEntry == null)
+            if (entry == null)
             {
-                throw new ArgumentNullException(nameof(logEntry));
+                throw new ArgumentNullException(nameof(entry));
             }
 
             if (string.IsNullOrWhiteSpace(Pattern))
@@ -227,22 +228,22 @@
                     target = string.Empty;
                     break;
                 case LogEntryField.Type:
-                    target = logEntry.Type;
+                    target = entry.Type;
                     break;
                 case LogEntryField.System:
-                    target = logEntry.System;
+                    target = entry.System;
                     break;
                 case LogEntryField.Classification:
                     target = string.Empty;
                     break;
                 case LogEntryField.Thread:
-                    target = logEntry.Thread;
+                    target = entry.Thread;
                     break;
                 case LogEntryField.Source:
-                    target = logEntry.Source;
+                    target = entry.Source;
                     break;
                 case LogEntryField.Description:
-                    target = logEntry.Description;
+                    target = entry.Description;
                     break;
                 case LogEntryField.Host:
                     target = string.Empty;

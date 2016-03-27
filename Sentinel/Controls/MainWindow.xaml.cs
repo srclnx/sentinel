@@ -32,7 +32,7 @@
     using Sentinel.Providers.Interfaces;
     using Sentinel.Services;
     using Sentinel.Services.Interfaces;
-    using Sentinel.StartUp;
+    using Sentinel.Startup;
     using Sentinel.Support;
     using Sentinel.Views.Interfaces;
 

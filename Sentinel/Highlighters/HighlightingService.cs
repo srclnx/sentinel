@@ -84,9 +84,9 @@
             }
         }
 
-        public IHighlighterStyle IsHighlighted(ILogEntry logEntry)
+        public IHighlighterStyle IsHighlighted(ILogEntry entry)
         {
-            return Highlighters.Where(h => h.IsMatch(logEntry)).Select(h => h.Style).FirstOrDefault();
+            return Highlighters.Where(h => h.IsMatch(entry)).Select(h => h.Style).FirstOrDefault();
         }
 
         public void Initialise()

@@ -184,16 +184,16 @@
             }
         }
 
-        public void AddChild(IWizardPage newItem)
+        public void AddChild(IWizardPage child)
         {
-            children.Add(newItem);
-            OnPropertyChanged("Children");
+            children.Add(child);
+            OnPropertyChanged(nameof(Children));
         }
 
-        public void RemoveChild(IWizardPage item)
+        public void RemoveChild(IWizardPage child)
         {
-            children.Remove(item);
-            OnPropertyChanged("Children");
+            children.Remove(child);
+            OnPropertyChanged(nameof(Children));
         }
 
         public object Save(object saveData)

@@ -49,34 +49,16 @@
                 if (port != value)
                 {
                     port = value;
-                    OnPropertyChanged("Port");
+                    OnPropertyChanged(nameof(Port));
                 }
             }
         }
 
-        public string Title
-        {
-            get
-            {
-                return "Configure Provider";
-            }
-        }
+        public string Title => "Configure Provider";
 
-        public ReadOnlyObservableCollection<IWizardPage> Children
-        {
-            get
-            {
-                return readonlyChildren;
-            }
-        }
+        public ReadOnlyObservableCollection<IWizardPage> Children => readonlyChildren;
 
-        public string Description
-        {
-            get
-            {
-                return "Network settings to be used by new provider";
-            }
-        }
+        public string Description => "Network settings to be used by new provider";
 
         public bool IsValid
         {
@@ -90,29 +72,23 @@
                 if (isValid != value)
                 {
                     isValid = value;
-                    OnPropertyChanged("IsValid");
+                    OnPropertyChanged(nameof(IsValid));
                 }
             }
         }
 
-        public Control PageContent
+        public Control PageContent => this;
+
+        public void AddChild(IWizardPage child)
         {
-            get
-            {
-                return this;
-            }
+            children.Add(child);
+            OnPropertyChanged(nameof(Children));
         }
 
-        public void AddChild(IWizardPage newItem)
+        public void RemoveChild(IWizardPage child)
         {
-            children.Add(newItem);
-            OnPropertyChanged("Children");
-        }
-
-        public void RemoveChild(IWizardPage item)
-        {
-            children.Remove(item);
-            OnPropertyChanged("Children");
+            children.Remove(child);
+            OnPropertyChanged(nameof(Children));
         }
 
         public object Save(object saveData)
@@ -138,10 +114,10 @@
 
         private void SelectProviderPagePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Port")
+            if (e.PropertyName == nameof(Port))
             {
                 var state = port > 2000;
-                Trace.WriteLine(string.Format("Setting PageValidates to {0}", state));
+                Trace.WriteLine($"Setting PageValidates to {state}");
                 IsValid = state;
             }
         }

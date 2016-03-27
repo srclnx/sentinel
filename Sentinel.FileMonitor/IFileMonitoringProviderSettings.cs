@@ -12,6 +12,6 @@
 
         string MessageDecoder { get; set; }
 
-        void Update(string fileName, int refresh, bool loadExisting);
+        void Update(string fileName, int refreshPeriod, bool loadExistingContent);
     }
 }

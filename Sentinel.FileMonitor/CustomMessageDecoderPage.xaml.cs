@@ -48,7 +48,7 @@
                 if (customFormat != value)
                 {
                     customFormat = value;
-                    OnPropertyChanged("CustomFormat");
+                    OnPropertyChanged(nameof(CustomFormat));
                 }
             }
         }
@@ -71,7 +71,7 @@
                 if (isValid != value)
                 {
                     isValid = value;
-                    OnPropertyChanged("IsValid");
+                    OnPropertyChanged(nameof(IsValid));
                 }
             }
         }
@@ -95,7 +95,7 @@
                 if (error != value)
                 {
                     error = value;
-                    OnPropertyChanged("Error");
+                    OnPropertyChanged(nameof(Error));
                 }
             }
         }
@@ -146,16 +146,16 @@
             }
         }
 
-        public void AddChild(IWizardPage newItem)
+        public void AddChild(IWizardPage child)
         {
-            children.Add(newItem);
-            OnPropertyChanged("Children");
+            children.Add(child);
+            OnPropertyChanged(nameof(Children));
         }
 
-        public void RemoveChild(IWizardPage item)
+        public void RemoveChild(IWizardPage child)
         {
-            children.Remove(item);
-            OnPropertyChanged("Children");
+            children.Remove(child);
+            OnPropertyChanged(nameof(Children));
         }
 
         public object Save(object saveData)
@@ -196,9 +196,9 @@
 
         private void PropertyChangedHandler(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CustomFormat")
+            if (e.PropertyName == nameof(CustomFormat))
             {
-                IsValid = this["CustomFormat"] == null;
+                IsValid = this[nameof(CustomFormat)] == null;
             }
         }
 
@@ -206,7 +206,7 @@
         {
             // Set the custom format after the constructor to force the validation
             // to show immediately, this will retrigger the validation.
-            OnPropertyChanged("CustomFormat");
+            OnPropertyChanged(nameof(CustomFormat));
         }
     }
 }
