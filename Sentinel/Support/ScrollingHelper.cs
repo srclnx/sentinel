@@ -13,7 +13,7 @@
             // To address CA1053
         }
 
-        public delegate void VoidFunctionHandler(ListBox listBox);
+        private delegate void VoidFunctionHandler(ListBox listBox);
 
         public static Visual GetDescendantByType(Visual element, Type type)
         {
