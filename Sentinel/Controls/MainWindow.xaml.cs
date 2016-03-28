@@ -412,7 +412,7 @@
             // may be supplied and they will suppress the prompting of the new listener wizard.
             var commandLine = Environment.GetCommandLineArgs();
 
-            Log.Debug($"Command Line: {commandLine}");
+            Log.Debug($"Command Line: {string.Join(" ", commandLine.Cast<string>())}");
             Log.Debug(string.Join(" ", commandLine.Select((s, i) => $"[{i}] = {s}\r\n")));
 
             // TODO: handle squirrel parameters, for now, strip them
