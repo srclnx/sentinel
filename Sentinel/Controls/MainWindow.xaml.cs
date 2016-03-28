@@ -411,6 +411,10 @@
             // Determine whether anything passed on the command line, limited options
             // may be supplied and they will suppress the prompting of the new listener wizard.
             var commandLine = Environment.GetCommandLineArgs();
+
+            Log.Debug($"Command Line: {commandLine}");
+            Log.Debug(string.Join(" ", commandLine.Select((s, i) => $"[{i}] = {s}\r\n")));
+
             if (commandLine.Length == 1)
             {
                 Add.Execute(null);
