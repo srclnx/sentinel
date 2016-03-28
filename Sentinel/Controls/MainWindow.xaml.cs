@@ -415,13 +415,16 @@
             Log.Debug($"Command Line: {commandLine}");
             Log.Debug(string.Join(" ", commandLine.Select((s, i) => $"[{i}] = {s}\r\n")));
 
-            if (commandLine.Length == 1)
+            // TODO: handle squirrel parameters, for now, strip them
+            var filteredCommandLine = commandLine.Where(o => !o.StartsWith("--squirrel")).ToArray();
+
+            if (filteredCommandLine.Length == 1)
             {
                 Add.Execute(null);
             }
             else
             {
-                ProcessCommandLine(commandLine.Skip(1));
+                ProcessCommandLine(filteredCommandLine.Skip(1));
             }
 
             // Debug the available loggers.
