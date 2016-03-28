@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Sentinel</id>
+        <version>1.0.0</version>
+        <title>Sentinel</title>
+        <authors>Ray Hayes</authors>
+        <owners>Ray Hayes</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Log file viewer for nLog, log4net, etc.</description>
+        <copyright>Copyright © Ray Hayes 2009-2016</copyright>
+    </metadata>
+    <files>
+        <file src="Sentinel\Bin\Release\CommandLine.dll" target="lib\net45\CommandLine.dll" />
+        <file src="Sentinel\Bin\Release\Common.Logging.Core.dll" target="lib\net45\Common.Logging.Core.dll" />
+        <file src="Sentinel\Bin\Release\Common.Logging.dll" target="lib\net45\Common.Logging.dll" />
+        <file src="Sentinel\Bin\Release\DeltaCompressionDotNet.dll" target="lib\net45\DeltaCompressionDotNet.dll" />
+        <file src="Sentinel\Bin\Release\DeltaCompressionDotNet.MsDelta.dll" target="lib\net45\DeltaCompressionDotNet.MsDelta.dll" />
+        <file src="Sentinel\Bin\Release\DeltaCompressionDotNet.PatchApi.dll" target="lib\net45\DeltaCompressionDotNet.PatchApi.dll" />
+        <file src="Sentinel\Bin\Release\ICSharpCode.SharpZipLib.dll" target="lib\net45\ICSharpCode.SharpZipLib.dll" />
+        <file src="Sentinel\Bin\Release\Mono.Cecil.dll" target="lib\net45\Mono.Cecil.dll" />
+        <file src="Sentinel\Bin\Release\Mono.Cecil.Mdb.dll" target="lib\net45\Mono.Cecil.Mdb.dll" />
+        <file src="Sentinel\Bin\Release\Mono.Cecil.Pdb.dll" target="lib\net45\Mono.Cecil.Pdb.dll" />
+        <file src="Sentinel\Bin\Release\Mono.Cecil.Rocks.dll" target="lib\net45\Mono.Cecil.Rocks.dll" />
+        <file src="Sentinel\Bin\Release\Newtonsoft.Json.dll" target="lib\net45\Newtonsoft.Json.dll" />
+        <file src="Sentinel\Bin\Release\NodaTime.dll" target="lib\net45\NodaTime.dll" />
+        <file src="Sentinel\Bin\Release\NuGet.Squirrel.dll" target="lib\net45\NuGet.Squirrel.dll" />
+        <file src="Sentinel\Bin\Release\Sentinel.exe" target="lib\net45\Sentinel.exe" />
+        <file src="Sentinel\Bin\Release\Sentinel.exe.config" target="lib\net45\Sentinel.exe.config" />
+        <file src="Sentinel\Bin\Release\Sentinel.FileMonitor.dll" target="lib\net45\Sentinel.FileMonitor.dll" />
+        <file src="Sentinel\Bin\Release\Sentinel.Interfaces.dll" target="lib\net45\Sentinel.Interfaces.dll" />
+        <file src="Sentinel\Bin\Release\Sentinel.Log4Net.dll" target="lib\net45\Sentinel.Log4Net.dll" />
+        <file src="Sentinel\Bin\Release\Sentinel.MSBuild.dll" target="lib\net45\Sentinel.MSBuild.dll" />
+        <file src="Sentinel\Bin\Release\Sentinel.NLog.dll" target="lib\net45\Sentinel.NLog.dll" />
+        <file src="Sentinel\Bin\Release\Splat.dll" target="lib\net45\Splat.dll" />
+        <file src="Sentinel\Bin\Release\Squirrel.dll" target="lib\net45\Squirrel.dll" />
+        <file src="Sentinel\Bin\Release\WpfExtras.dll" target="lib\net45\WpfExtras.dll" />
+    </files>
+</package>

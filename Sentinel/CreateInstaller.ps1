@@ -5,7 +5,10 @@ if ( $DTE -eq $null ) {
 	exit 1
 }
 
-mkdir -Path $tempDirectoryName
+mkdir -Path $tempDirectoryName -ErrorAction SilentlyContinue
 rm -Recurse -Force "$tempDirectoryName\*.nupkg"
-NuGet pack .\sentinel.sln -outputDirectory $tempDirectoryName
-ls "$tempDirectoryName\*.nupkg" | % { Squirrel --releasify $_ -p .\packages }
+
+# Todo: auto pick up version number
+NuGet pack .\Sentinel.1.0.0.nuspec -OutputDirectory "$tempDirectoryName" -verbose
+ls "$tempDirectoryName\*.nupkg" | %{Squirrel --releasify $_ -p .\packages -r .\Releases}
+# rm -r -fo "$tempDirectoryName"
