@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Version Info", "Version Inf
 		SharedAssemblyInfo.cs = SharedAssemblyInfo.cs
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Applications", "Test Applications", "{77C7FB2D-4CEC-4250-86CE-BFAC310007CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,5 +103,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{93081C58-433D-40D1-B0AD-524AA098D3B2} = {77C7FB2D-4CEC-4250-86CE-BFAC310007CD}
+		{336279C2-07D0-4119-B02A-6AEE8ECAF4BC} = {77C7FB2D-4CEC-4250-86CE-BFAC310007CD}
+		{44D1E267-AE99-43BE-B824-980B4ABFF9CA} = {77C7FB2D-4CEC-4250-86CE-BFAC310007CD}
+		{26533F90-3677-4565-84AE-928BCFDC7DFB} = {77C7FB2D-4CEC-4250-86CE-BFAC310007CD}
+		{6E02A1CC-CFC2-48CD-95F5-3C0856AB9FF7} = {77C7FB2D-4CEC-4250-86CE-BFAC310007CD}
 	EndGlobalSection
 EndGlobal
