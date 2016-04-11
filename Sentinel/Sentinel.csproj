@@ -80,7 +80,7 @@
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -548,7 +548,6 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="Sentinel.ruleset" />
-    <None Include="Sentinel_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Small\Info.png" />
