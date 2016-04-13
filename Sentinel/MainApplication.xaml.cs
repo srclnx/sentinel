@@ -5,6 +5,8 @@
     using System.Runtime.ExceptionServices;
     using System.Windows;
 
+    using Common.Logging;
+
     using Sentinel.Properties;
     using Sentinel.Services;
     using Sentinel.Services.Interfaces;
@@ -14,6 +16,8 @@
     /// </summary>
     public partial class MainApplication : Application
     {
+        private static readonly ILog Log = LogManager.GetLogger<MainApplication>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MainApplication"/> class.
         /// </summary>
@@ -31,7 +35,7 @@
             ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
 
-        private void FirstChanceExceptionHandler(object sender, FirstChanceExceptionEventArgs e)
+        private static void FirstChanceExceptionHandler(object sender, FirstChanceExceptionEventArgs e)
         {
             if (e.Exception is SocketException)
             {
@@ -44,22 +48,9 @@
             }
 
             var errorString =
-                string.Format(
-                    "Sender: {0} FirstChanceException raised in {1} : Message -- {2} :: InnerException -- {3} :: TargetSite -- {4} :: StackTrace -- {5} :: HelpLink -- {6} ",
-                    sender,
-                    AppDomain.CurrentDomain.FriendlyName,
-                    e.Exception.Message,
-                    e.Exception.InnerException?.Message ?? string.Empty,
-                    e.Exception.TargetSite?.Name ?? string.Empty,
-                    e.Exception.StackTrace ?? string.Empty,
-                    e.Exception.HelpLink ?? string.Empty);
+                $"Sender: {sender} FirstChanceException raised in {AppDomain.CurrentDomain.FriendlyName} : Message -- {e.Exception.Message} :: InnerException -- {e.Exception.InnerException?.Message ?? string.Empty} :: TargetSite -- {e.Exception.TargetSite?.Name ?? string.Empty} :: StackTrace -- {e.Exception.StackTrace ?? string.Empty} :: HelpLink -- {e.Exception.HelpLink ?? string.Empty} ";
 
-            MessageBox.Show(
-                errorString,
-                "Error " + e.Exception.GetType(),
-                MessageBoxButton.OK,
-                MessageBoxImage.Error,
-                MessageBoxResult.OK);
+            Log.Error(errorString, e.Exception);
         }
     }
 }

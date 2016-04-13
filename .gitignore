@@ -157,3 +157,5 @@ $RECYCLE.BIN/
 
 # Nuget
 packages
+/Releases
+/__squirrel_temp__
