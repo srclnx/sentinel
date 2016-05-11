@@ -56,7 +56,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>Sentinel.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>Bin\Debug\Sentinel.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -68,7 +69,8 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>Sentinel.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>Bin\Release\Sentinel.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>8A90274FC7E59D487F5F6BC8CFCE0444E0C5988D</ManifestCertificateThumbprint>
