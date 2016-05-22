@@ -27,6 +27,12 @@
             typeof(Wizard),
             new UIPropertyMetadata(false));
 
+        public static readonly DependencyProperty HideNavigationTreeOptionProperty = DependencyProperty.Register(
+            "HideNavigationTreeOption",
+            typeof(bool),
+            typeof(Wizard),
+            new UIPropertyMetadata(true));
+
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
             "ViewModel",
             typeof(INotifyPropertyChanged),
@@ -99,6 +105,19 @@
             set
             {
                 SetValue(ShowNavigationTreeProperty, value);
+            }
+        }
+
+        public bool HideNavigationTreeOption
+        {
+            get
+            {
+                return (bool)GetValue(HideNavigationTreeOptionProperty);
+            }
+
+            set
+            {
+                SetValue(HideNavigationTreeOptionProperty, value);
             }
         }
 
