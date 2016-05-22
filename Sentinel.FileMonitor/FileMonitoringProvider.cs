@@ -200,7 +200,7 @@
                     fi.Refresh();
 
                     var length = fi.Length;
-                    if (length < bytesRead)
+                    if (length > bytesRead)
                     {
                         using (var fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.Write))
                         {
@@ -276,11 +276,12 @@
 
                     entry.DateTime = dt;
                 }
-
-                if (usedGroupNames.Contains("Type"))
+                else
                 {
-                    entry.Type = m.Groups["Type"].Value;
+                    entry.DateTime = DateTime.UtcNow;
                 }
+
+                entry.Type = usedGroupNames.Contains("Type") ? m.Groups["Type"].Value : "INFO";
 
                 if (usedGroupNames.Contains(LoggerIdentifier))
                 {

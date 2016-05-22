@@ -22,6 +22,7 @@
 
     using Sentinel.Classification.Interfaces;
     using Sentinel.Extractors.Interfaces;
+    using Sentinel.FileMonitor;
     using Sentinel.Filters.Interfaces;
     using Sentinel.Highlighters.Interfaces;
     using Sentinel.Interfaces;
@@ -354,7 +355,11 @@
             var frame = ServiceLocator.Instance.Get<IWindowFrame>();
 
             // Add to the tab control.
-            var newTab = new TabItem { Header = sessionManager.Name, Content = frame };
+            var newTab = new TabItem
+                             {
+                                 Header = sessionManager.Name,
+                                 Content = frame
+                             };
             tabControl.Items.Add(newTab);
             tabControl.SelectedItem = newTab;
         }
@@ -383,7 +388,11 @@
             var frame = ServiceLocator.Instance.Get<IWindowFrame>();
 
             // Add to the tab control.
-            var tab = new TabItem { Header = sessionManager.Name, Content = frame };
+            var tab = new TabItem
+                          {
+                              Header = sessionManager.Name,
+                              Content = frame
+                          };
             tabControl.Items.Add(tab);
             tabControl.SelectedItem = tab;
         }
@@ -490,17 +499,20 @@
 
             RemoveBindingReferences();
 
-            if (invokedVerb == "nlog")
+            switch (invokedVerb)
             {
-                CreateDefaultNLogListener((NLogOptions)invokedVerbInstance, sessionManager);
-            }
-            else if (invokedVerb == "log4net")
-            {
-                CreateDefaultLog4NetListener((Log4NetOptions)invokedVerbInstance, sessionManager);
-            }
-            else
-            {
-                sessionManager.LoadSession(commandLineArguments.FirstOrDefault());
+                case "nlog":
+                    CreateDefaultNLogListener((NLogOptions)invokedVerbInstance, sessionManager);
+                    break;
+                case "log4net":
+                    CreateDefaultLog4NetListener((Log4NetOptions)invokedVerbInstance, sessionManager);
+                    break;
+                case "file":
+                    CreateFileMonitorListener((FileMonitorOptions)invokedVerbInstance, sessionManager);
+                    break;
+                default:
+                    sessionManager.LoadSession(commandLineArguments.FirstOrDefault());
+                    break;
             }
 
             BindViewToViewModel();
@@ -508,7 +520,11 @@
             var frame = ServiceLocator.Instance.Get<IWindowFrame>();
 
             // Add to the tab control.
-            var newTab = new TabItem { Header = sessionManager.Name, Content = frame };
+            var newTab = new TabItem
+                             {
+                                 Header = sessionManager.Name,
+                                 Content = frame
+                             };
             tabControl.Items.Add(newTab);
             tabControl.SelectedItem = newTab;
         }
@@ -525,14 +541,13 @@
                                            Info = Log4NetProvider.ProviderRegistrationInformation.Info
                                        };
 
-            var providers =
-                Enumerable.Repeat(
-                    new PendingProviderRecord
-                        {
-                            Info = Log4NetProvider.ProviderRegistrationInformation.Info,
-                            Settings = providerSettings
-                        },
-                    1);
+            var providers = Enumerable.Repeat(
+                new PendingProviderRecord
+                    {
+                        Info = Log4NetProvider.ProviderRegistrationInformation.Info,
+                        Settings = providerSettings
+                    },
+                1);
 
             sessionManager.LoadProviders(providers);
         }
@@ -545,15 +560,75 @@
 
             var providerSettings = new NetworkSettings
                                        {
-                                           Protocol =
-                                               verbOptions.IsUdp
-                                                   ? NetworkProtocol.Udp
-                                                   : NetworkProtocol.Tcp,
+                                           Protocol = verbOptions.IsUdp ? NetworkProtocol.Udp : NetworkProtocol.Tcp,
                                            Port = verbOptions.Port,
                                            Name = name,
                                            Info = info
                                        };
-            var providers = Enumerable.Repeat(new PendingProviderRecord { Info = info, Settings = providerSettings }, 1);
+            var providers = Enumerable.Repeat(
+                new PendingProviderRecord
+                    {
+                        Info = info,
+                        Settings = providerSettings
+                    },
+                1);
+
+            sessionManager.LoadProviders(providers);
+        }
+
+        private void CreateFileMonitorListener(FileMonitorOptions verbOptions, ISessionManager sessionManager)
+        {
+            if (verbOptions == null)
+            {
+                throw new ArgumentNullException(nameof(verbOptions));
+            }
+
+            if (verbOptions.FileNames == null || verbOptions.FileNames.Count < 1)
+            {
+                Log.Error("Need more command line options, filename");
+
+                // TODO: file not found!
+            }
+
+            var filename = verbOptions.FileNames?.ElementAt(0);
+            var name = $"Using file listener on ${filename}";
+            Log.Debug(name);
+
+            string decoder;
+            switch (verbOptions.MessageDecoder)
+            {
+                case FileMonitorOptions.DecoderOptions.Custom:
+                    decoder = verbOptions.CustomDecoderFormat;
+
+                    // TODO: validate custom format is legal...
+                    break;
+                case FileMonitorOptions.DecoderOptions.NLogDefault:
+                    // TODO: register these, this is a cut+paste from MessageFormatPage
+                    decoder = @"^(?<DateTime>[^|]+)\|(?<Type>[^|]+)\|(?<Logger>[^|]+)\|(?<Description>[^$]*)$";
+                    break;
+                default:
+                    decoder = null;
+                    break;
+            }
+
+            var info = FileMonitoringProvider.ProviderRegistrationInformation.Info;
+            var providerSettings = new FileMonitoringProviderSettings
+                                       {
+                                           Info = info,
+                                           Name = name,
+                                           FileName = filename,
+                                           RefreshPeriod = verbOptions.RefreshPeriod,
+                                           LoadExistingContent = verbOptions.LoadExistingContent,
+                                           MessageDecoder = decoder
+                                       };
+
+            var providers = Enumerable.Repeat(
+                new PendingProviderRecord
+                    {
+                        Info = info,
+                        Settings = providerSettings
+                    },
+                1);
 
             sessionManager.LoadProviders(providers);
         }

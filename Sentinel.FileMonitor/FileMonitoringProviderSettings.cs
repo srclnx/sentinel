@@ -6,6 +6,10 @@
 
     public class FileMonitoringProviderSettings : IFileMonitoringProviderSettings
     {
+        public FileMonitoringProviderSettings()
+        {
+        }
+
         public FileMonitoringProviderSettings(
             IProviderInfo info,
             string providerName,
@@ -20,20 +24,20 @@
             LoadExistingContent = loadExistingContent;
         }
 
-        public string FileName { get; private set; }
+        public string FileName { get; set; }
 
         /// <summary>
         /// Gets the reference back to the provider this setting is appropriate to.
         /// </summary>
-        public IProviderInfo Info { get; private set; }
+        public IProviderInfo Info { get; set; }
 
-        public bool LoadExistingContent { get; private set; }
+        public bool LoadExistingContent { get; set; }
 
         public string MessageDecoder { get; set; }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
-        public int RefreshPeriod { get; private set; }
+        public int RefreshPeriod { get; set; }
 
         public string Summary
             => string.Format(CultureInfo.InvariantCulture, "Monitor the file {0} for new log entries", FileName);
