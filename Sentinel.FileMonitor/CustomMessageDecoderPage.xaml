@@ -11,6 +11,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -43,7 +44,7 @@
                  AcceptsReturn="True"
                  Grid.Row="1"
                  Margin="3,10,3,3"
-                 Text="{Binding CustomFormat, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                 Text="{Binding CustomFormat, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                  VerticalAlignment="Stretch" />
         <TextBlock Grid.Column="0"
                    Grid.Row="2"
@@ -52,6 +53,13 @@
                    FontWeight="Bold"
                    Foreground="Red"
                    Text="{Binding Error}"
-                   TextAlignment="Center" />
+                   TextAlignment="Center" 
+                   Margin="5,5"/>
+        <Button Grid.Column="1"
+                Grid.Row="3"
+                Width="120"
+                HorizontalAlignment="Left"
+                Margin="5,5"
+                Command="{Binding TestRegex}">Test Regex</Button>
     </Grid>
 </UserControl>

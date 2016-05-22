@@ -3,9 +3,13 @@
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Text.RegularExpressions;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
+
+    using Common.Logging;
 
     using WpfExtras;
 
@@ -14,6 +18,8 @@
     /// </summary>
     public partial class CustomMessageDecoderPage : IWizardPage, IDataErrorInfo
     {
+        private static readonly ILog Log = LogManager.GetLogger<CustomMessageDecoderPage>();
+
         private readonly ObservableCollection<IWizardPage> children = new ObservableCollection<IWizardPage>();
 
         private readonly ReadOnlyObservableCollection<IWizardPage> readonlyChildren;
@@ -31,10 +37,22 @@
 
             readonlyChildren = new ReadOnlyObservableCollection<IWizardPage>(children);
 
+            TestRegex = new DelegateCommand(
+                a =>
+                    {
+                        string errorText;
+                        IsValid = TestCustomRegex(CustomFormat, out errorText);
+                        Error = errorText;
+                        OnPropertyChanged(nameof(Error));
+                        OnPropertyChanged(nameof(IsValid));
+                    });
+
             PropertyChanged += PropertyChangedHandler;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public ICommand TestRegex { get; private set; }
 
         public string CustomFormat
         {
@@ -112,34 +130,7 @@
             {
                 if (columnName == "CustomFormat")
                 {
-                    string err = null;
-
-                    if (string.IsNullOrEmpty(CustomFormat))
-                    {
-                        err = "Pattern can not be empty";
-                    }
-                    else
-                    {
-                        // See whether the string validates as a Regex
-                        try
-                        {
-                            var r = new Regex(CustomFormat);
-
-                            // See if it contains the minimal fields
-                            if (!ContainsKeyFields(CustomFormat))
-                            {
-                                err = "The pattern does not define any of the core fields, Description, Type or "
-                                      + "DateTime.  At least one of these should be defined.";
-                            }
-                        }
-                        catch (ArgumentException)
-                        {
-                            err = "The custom pattern does not equate to a valid regular expression";
-                        }
-                    }
-
-                    Error = err;
-                    return err;
+                    return Error;
                 }
 
                 return null;
@@ -160,22 +151,27 @@
 
         public object Save(object saveData)
         {
-            // Todo: Implement page save....
-            return saveData;
+            var settings = saveData as IFileMonitoringProviderSettings;
+            if (settings != null)
+            {
+                settings.MessageDecoder = CustomFormat;
+            }
+            else
+            {
+                Log.Warn(
+                    $"The supplied 'saveData' was not type IFileMonitoringProviderSettings, can not save this page's information");
+            }
 
-            ////Debug.Assert(settings != null,
-            ////             "Settings not set, did the previous page not provide this?  " +
-            ////             "Was SuggestPreviousPage not called by the caller of this class?");
-            ////settings.MessageDecoder = CustomFormat;
-            ////return settings;
+            return saveData;
         }
+
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             if (handler != null)
             {
-                PropertyChangedEventArgs e = new PropertyChangedEventArgs(propertyName);
+                var e = new PropertyChangedEventArgs(propertyName);
                 handler(this, e);
             }
         }
@@ -184,9 +180,7 @@
         {
             string p = pattern.ToLower();
 
-            if (p.Contains("(?<description>") ||
-                p.Contains("(?<type>") ||
-                p.Contains("(?<datetime>"))
+            if (p.Contains("(?<description>") || p.Contains("(?<type>") || p.Contains("(?<datetime>"))
             {
                 return true;
             }
@@ -198,7 +192,9 @@
         {
             if (e.PropertyName == nameof(CustomFormat))
             {
-                IsValid = this[nameof(CustomFormat)] == null;
+                // LIVE testing of the Regex has been disabled, so when the CustomFormat field changes, invalidate
+                // any previous test results - user needs to click the "Test" button.
+                IsValid = false;
             }
         }
 
@@ -207,6 +203,50 @@
             // Set the custom format after the constructor to force the validation
             // to show immediately, this will retrigger the validation.
             OnPropertyChanged(nameof(CustomFormat));
+        }
+
+        private bool TestCustomRegex(string regex, out string errorText)
+        {
+            var sw = Stopwatch.StartNew();
+
+            errorText = null;
+            var returnCode = false;
+
+            if (string.IsNullOrEmpty(regex))
+            {
+                errorText = "Pattern can not be empty";
+            }
+            else
+            {
+                try
+                {
+                    // See whether the string validates as a Regex
+                    var r = new Regex(regex);
+
+                    // See if it contains the minimal fields
+                    if (!ContainsKeyFields(regex))
+                    {
+                        errorText = "The pattern does not define any of the core fields, Description, Type or "
+                                    + "DateTime.  At least one of these should be defined.";
+                    }
+                    else
+                    {
+                        returnCode = true;
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    errorText = "The custom pattern does not equate to a valid regular expression";
+                }
+            }
+
+            Debug.Assert(
+                (!returnCode && errorText != null) || (returnCode && errorText == null),
+                "Error text must be when false");
+
+            Log.Debug($"Evaluating regex took {sw.ElapsedMilliseconds} ms: {regex}");
+
+            return returnCode;
         }
     }
 }

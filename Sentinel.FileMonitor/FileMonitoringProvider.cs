@@ -175,6 +175,11 @@
             {
                 usedGroupNames.Add(LoggerIdentifier);
             }
+
+            if (decoder.Contains("(?<SYSTEM>"))
+            {
+                usedGroupNames.Add("System");
+            }
         }
 
         private void DoWork(object sender, DoWorkEventArgs e)
@@ -282,6 +287,7 @@
                 }
 
                 entry.Type = usedGroupNames.Contains("Type") ? m.Groups["Type"].Value : "INFO";
+                entry.System = usedGroupNames.Contains("System") ? m.Groups["System"].Value : string.Empty;
 
                 if (usedGroupNames.Contains(LoggerIdentifier))
                 {
