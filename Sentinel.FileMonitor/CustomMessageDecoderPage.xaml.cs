@@ -165,7 +165,6 @@
             return saveData;
         }
 
-
         protected virtual void OnPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;
@@ -178,14 +177,9 @@
 
         private static bool ContainsKeyFields(string pattern)
         {
-            string p = pattern.ToLower();
+            var p = pattern.ToLower();
 
-            if (p.Contains("(?<description>") || p.Contains("(?<type>") || p.Contains("(?<datetime>"))
-            {
-                return true;
-            }
-
-            return false;
+            return p.Contains("(?<description>") || p.Contains("(?<type>") || p.Contains("(?<datetime>");
         }
 
         private void PropertyChangedHandler(object sender, PropertyChangedEventArgs e)

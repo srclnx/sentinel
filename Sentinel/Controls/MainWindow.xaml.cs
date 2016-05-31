@@ -250,25 +250,27 @@
             if (!sessionManager.IsSaved)
             {
                 var userResult = MessageBox.Show(
-                    "Do you want to save changes you made to " + sessionManager.Name + "?",
+                    $"Do you want to save changes you made to {sessionManager.Name}?",
                     "Sentinel",
                     MessageBoxButton.YesNoCancel,
                     MessageBoxImage.Warning);
 
-                if (userResult == MessageBoxResult.Cancel)
+                switch (userResult)
                 {
-                    return;
-                }
-
-                if (userResult == MessageBoxResult.Yes)
-                {
-                    SaveSession.Execute(null);
-
-                    // if the user clicked "Cancel" at the save dialog box
-                    if (!sessionManager.IsSaved)
-                    {
+                    case MessageBoxResult.Cancel:
                         return;
-                    }
+                    case MessageBoxResult.No:
+                        break;
+                    case MessageBoxResult.Yes:
+                        SaveSession.Execute(null);
+
+                        // if here and the session isn't saved, user has "Cancelled" at the save dialog box
+                        if (!sessionManager.IsSaved)
+                        {
+                            return;
+                        }
+
+                        break;
                 }
             }
 
@@ -295,20 +297,22 @@
                     MessageBoxButton.YesNoCancel,
                     MessageBoxImage.Warning);
 
-                if (userResult == MessageBoxResult.Cancel)
+                switch (userResult)
                 {
-                    return;
-                }
-
-                if (userResult == MessageBoxResult.Yes)
-                {
-                    SaveSession.Execute(null);
-
-                    // if the user clicked "Cancel" at the save dialog box
-                    if (!sessionManager.IsSaved)
-                    {
+                    case MessageBoxResult.Cancel:
                         return;
-                    }
+                    case MessageBoxResult.No:
+                        break;
+                    case MessageBoxResult.Yes:
+                        SaveSession.Execute(null);
+
+                        // if the user clicked "Cancel" at the save dialog box
+                        if (!sessionManager.IsSaved)
+                        {
+                            return;
+                        }
+
+                        break;
                 }
             }
 
@@ -595,6 +599,16 @@
             Log.Debug(name);
 
             string decoder;
+
+            if (!string.IsNullOrWhiteSpace(verbOptions.CustomDecoderFormat))
+            {
+                if (verbOptions.MessageDecoder != FileMonitorOptions.DecoderOptions.Custom)
+                {
+                    Log.Warn($"Custom decoder string supplied, but decoder option was {verbOptions.MessageDecoder}, assuming Custom was intended");
+                    verbOptions.MessageDecoder = FileMonitorOptions.DecoderOptions.Custom;
+                }
+            }
+
             switch (verbOptions.MessageDecoder)
             {
                 case FileMonitorOptions.DecoderOptions.Custom:
