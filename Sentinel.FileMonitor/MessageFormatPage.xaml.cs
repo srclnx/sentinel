@@ -113,7 +113,7 @@
             Debug.Assert(saveData != null, "Expecting a valid save-data instance");
             Debug.Assert(saveData is IFileMonitoringProviderSettings, "Should be an IFileMonitoringProviderSettings");
 
-            IFileMonitoringProviderSettings settings = saveData as IFileMonitoringProviderSettings;
+            var settings = saveData as IFileMonitoringProviderSettings;
 
             if (settings != null)
             {

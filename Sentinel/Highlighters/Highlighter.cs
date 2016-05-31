@@ -234,16 +234,19 @@ namespace Sentinel.Highlighters
                     break;
             }
 
-            switch (Mode)
+            if (target != null)
             {
-                case MatchMode.Exact:
-                    return target.Equals(Pattern);
-                case MatchMode.CaseSensitive:
-                    return target.Contains(Pattern);
-                case MatchMode.CaseInsensitive:
-                    return target.ToLower().Contains(Pattern.ToLower());
-                case MatchMode.RegularExpression:
-                    return regex != null && regex.IsMatch(target);
+                switch (Mode)
+                {
+                    case MatchMode.Exact:
+                        return target.Equals(Pattern);
+                    case MatchMode.CaseSensitive:
+                        return target.Contains(Pattern);
+                    case MatchMode.CaseInsensitive:
+                        return target.ToLower().Contains(Pattern.ToLower());
+                    case MatchMode.RegularExpression:
+                        return regex != null && regex.IsMatch(target);
+                }
             }
 
             return false;

@@ -175,6 +175,11 @@
             {
                 usedGroupNames.Add(LoggerIdentifier);
             }
+
+            if (decoder.Contains("(?<SYSTEM>"))
+            {
+                usedGroupNames.Add("System");
+            }
         }
 
         private void DoWork(object sender, DoWorkEventArgs e)
@@ -200,7 +205,7 @@
                     fi.Refresh();
 
                     var length = fi.Length;
-                    if (length < bytesRead)
+                    if (length > bytesRead)
                     {
                         using (var fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.Write))
                         {
@@ -276,11 +281,13 @@
 
                     entry.DateTime = dt;
                 }
-
-                if (usedGroupNames.Contains("Type"))
+                else
                 {
-                    entry.Type = m.Groups["Type"].Value;
+                    entry.DateTime = DateTime.UtcNow;
                 }
+
+                entry.Type = usedGroupNames.Contains("Type") ? m.Groups["Type"].Value : "INFO";
+                entry.System = usedGroupNames.Contains("System") ? m.Groups["System"].Value : string.Empty;
 
                 if (usedGroupNames.Contains(LoggerIdentifier))
                 {

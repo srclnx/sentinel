@@ -11,5 +11,9 @@
         // ReSharper disable once UnusedMember.Global
         [VerbOption("nlog", HelpText = "Use nlog listener")]
         public NLogOptions NLogVerb { get; set; }
+
+        // ReSharper disable once UnusedMember.Global
+        [VerbOption("file", HelpText = "Use file monitor")]
+        public FileMonitorOptions FileMonitorVerb { get; set; }
     }
 }
