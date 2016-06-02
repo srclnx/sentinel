@@ -69,12 +69,8 @@
             Dispose(false);
         }
 
-        private static string[] DateFormats { get; } = { "d", "yyyy-MM-dd HH:mm:ss,fff", "O" };
-
         public static IProviderRegistrationRecord ProviderRegistrationInformation { get; } =
             new ProviderRegistrationInformation(new ProviderInfo());
-
-        public string FileName { get; }
 
         public IProviderInfo Information { get; }
 
@@ -85,6 +81,10 @@
         public string Name { get; set; }
 
         public bool IsActive => Worker.IsBusy;
+
+        private static string[] DateFormats { get; } = { "d", "yyyy-MM-dd HH:mm:ss,fff", "O" };
+
+        private string FileName { get; }
 
         private BackgroundWorker Worker { get; set; } = new BackgroundWorker();
 
@@ -207,6 +207,8 @@
                     fi.Refresh();
 
                     var length = fi.Length;
+
+                    // TODO: what happens if file get shortened?  E.g. rolled over to a new one.
                     if (length > bytesRead)
                     {
                         using (var fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.Write))
