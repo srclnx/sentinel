@@ -69,6 +69,8 @@
             Dispose(false);
         }
 
+        private static string[] DateFormats { get; } = { "d", "yyyy-MM-dd HH:mm:ss,fff", "O" };
+
         public static IProviderRegistrationRecord ProviderRegistrationInformation { get; } =
             new ProviderRegistrationInformation(new ProviderInfo());
 
@@ -260,8 +262,15 @@
 
             lock (pendingQueue)
             {
-                var entry = new LogEntry();
-
+                var entry = new LogEntry
+                                {
+                                    Metadata = new Dictionary<string, object>
+                                            {
+                                                { "Classification", string.Empty },
+                                                { "Host", FileName },
+                                                { "ReceivedTime", DateTime.UtcNow }
+                                            }
+                                };
                 if (usedGroupNames.Contains("Description"))
                 {
                     entry.Description = m.Groups["Description"].Value;
@@ -269,14 +278,21 @@
 
                 if (usedGroupNames.Contains("DateTime"))
                 {
+                    const DateTimeStyles Styles = DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces;
+                    var value = m.Groups["DateTime"].Value;
+
                     DateTime dt;
-                    if (!DateTime.TryParse(m.Groups["DateTime"].Value, out dt))
+                    if (
+                        !DateTime.TryParseExact(
+                            value,
+                            DateFormats,
+                            CultureInfo.InvariantCulture,
+                            Styles,
+                            out dt))
                     {
-                        Log.Trace(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "Failed to parse date {0}",
-                                m.Groups["DateTime"].Value));
+                        Log.Warn($"Failed to parse date '{value}'");
+                        Log.Debug("Overriding date/time that failed to parse to 'now'");
+                        dt = DateTime.UtcNow;
                     }
 
                     entry.DateTime = dt;
@@ -294,12 +310,6 @@
                     entry.Source = m.Groups[LoggerIdentifier].Value;
                     entry.System = m.Groups[LoggerIdentifier].Value;
                 }
-
-                entry.Metadata = new Dictionary<string, object>
-                                     {
-                                         { "Classification", string.Empty },
-                                         { "Host", FileName }
-                                     };
 
                 if (entry.Description.ToUpper(CultureInfo.InvariantCulture).Contains("EXCEPTION"))
                 {
