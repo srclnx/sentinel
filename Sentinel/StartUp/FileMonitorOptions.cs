@@ -6,6 +6,15 @@ namespace Sentinel.Startup
 
     public class FileMonitorOptions
     {
+        public enum DecoderOptions
+        {
+            Unknown = 0,
+
+            NLogDefault = 1,
+
+            Custom = int.MaxValue
+        }
+
         [Option('r', "refresh", HelpText = "Refresh period in milliseconds (default 250)", DefaultValue = 250)]
         public int RefreshPeriod { get; set; } = 250;
 
@@ -20,14 +29,5 @@ namespace Sentinel.Startup
 
         [Option("custom", HelpText = "Regular expression for customer message decoder")]
         public string CustomDecoderFormat { get; set; }
-
-        public enum DecoderOptions
-        {
-            Unknown = 0,
-
-            NLogDefault = 1,
-
-            Custom = int.MaxValue
-        }
     }
 }

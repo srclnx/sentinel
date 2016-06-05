@@ -27,7 +27,7 @@
         public string FileName { get; set; }
 
         /// <summary>
-        /// Gets the reference back to the provider this setting is appropriate to.
+        /// Gets or sets the reference back to the provider this setting is appropriate to.
         /// </summary>
         public IProviderInfo Info { get; set; }
 
@@ -39,8 +39,7 @@
 
         public int RefreshPeriod { get; set; }
 
-        public string Summary
-            => string.Format(CultureInfo.InvariantCulture, "Monitor the file {0} for new log entries", FileName);
+        public string Summary => $"Monitor the file {FileName} for new log entries";
 
         public void Update(string fileName, int refreshPeriod, bool loadExistingContent)
         {
