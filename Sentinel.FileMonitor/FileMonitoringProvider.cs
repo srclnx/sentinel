@@ -33,7 +33,7 @@
 
         private readonly List<string> usedGroupNames = new List<string>();
 
-        private long bytesRead;
+        private long positionReadTo;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Reliability",
@@ -195,7 +195,7 @@
 
             if (!loadExistingContent)
             {
-                bytesRead = fi.Length;
+                positionReadTo = fi.Length;
             }
 
             while (!e.Cancel)
@@ -206,18 +206,24 @@
                 {
                     fi.Refresh();
 
-                    var length = fi.Length;
+                    var fileLength = fi.Length;
 
                     // TODO: what happens if file get shortened?  E.g. rolled over to a new one.
-                    if (length > bytesRead)
+                    if (fileLength < positionReadTo)
+                    {
+                        Log.Debug("Detected file truncation, rollover or other such event on the file being monitored");
+                        positionReadTo = 0;
+                    }
+
+                    if (fileLength > positionReadTo)
                     {
                         using (var fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.Write))
                         {
-                            var position = fs.Seek(bytesRead, SeekOrigin.Begin);
-                            Debug.Assert(position == bytesRead, "Seek did not go to where we asked.");
+                            var position = fs.Seek(positionReadTo, SeekOrigin.Begin);
+                            Debug.Assert(position == positionReadTo, "Seek did not go to where we asked.");
 
                             // Calculate length of file.
-                            var bytesToRead = length - position;
+                            var bytesToRead = fileLength - position;
                             Debug.Assert(bytesToRead < int.MaxValue, "Too much data to read using this method!");
 
                             var buffer = new byte[bytesToRead];
@@ -242,7 +248,7 @@
                             }
 
                             // Can we determine whether any tailing data was unprocessed?
-                            bytesRead = position + bytesSuccessfullyRead;
+                            positionReadTo = position + bytesSuccessfullyRead;
                         }
                     }
                 }
