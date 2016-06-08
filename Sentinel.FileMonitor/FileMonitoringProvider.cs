@@ -268,7 +268,7 @@
                 throw new ArgumentNullException(nameof(inputStream));
             }
 
-            var peekingReader = new PeekLineStreamReader(inputStream);
+            var peekingReader = new PeekLineTextReader(inputStream);
             var entriesAdded = 0;
 
             lock (pendingQueue)
@@ -353,7 +353,7 @@
             }
         }
 
-        private void ConsumeAdditionalDescriptionLines(ILogEntry entry, PeekLineStreamReader peekingReader)
+        private void ConsumeAdditionalDescriptionLines(ILogEntry entry, PeekLineTextReader peekingReader)
         {
             if (peekingReader == null)
             {

@@ -8,9 +8,9 @@ namespace Sentinel.FileMonitor.Support
     /// <summary>
     /// Wrapper class for StreamReader that allows peeking at the next line
     /// </summary>
-    public class PeekLineStreamReader
+    public class PeekLineTextReader
     {
-        public PeekLineStreamReader(TextReader source)
+        public PeekLineTextReader(TextReader source)
         {
             if (source == null)
             {
