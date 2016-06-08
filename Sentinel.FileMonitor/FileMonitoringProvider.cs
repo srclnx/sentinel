@@ -13,6 +13,7 @@
 
     using Common.Logging;
 
+    using Sentinel.FileMonitor.Support;
     using Sentinel.Interfaces;
     using Sentinel.Interfaces.CodeContracts;
     using Sentinel.Interfaces.Providers;
@@ -267,132 +268,123 @@
                 throw new ArgumentNullException(nameof(inputStream));
             }
 
+            var peekingReader = new PeekLineStreamReader(inputStream);
             var entriesAdded = 0;
-
-            // Used for the peek ahead logic
-            string nextLine = null;
 
             lock (pendingQueue)
             {
-                while (inputStream.Peek() != -1)
+                for (var line = peekingReader.ReadLine(); line != null; line = peekingReader.ReadLine())
                 {
-                    var line = nextLine ?? inputStream.ReadLine();
+                    Debug.Assert(patternMatching != null, "Regular expression has not be set");
+                    var m = patternMatching.Match(line);
 
-                    if (line != null)
+                    if (!m.Success)
                     {
-                        Debug.Assert(patternMatching != null, "Regular expression has not be set");
-                        var m = patternMatching.Match(line);
-
-                        if (!m.Success)
-                        {
-                            Log.Warn("Message decoding did not work!");
-                            Log.Debug($"Message: {line}");
-                            Log.Debug($"Pattern: {FileMonitorProviderSettings.MessageDecoder}");
-                            return;
-                        }
-
-                        var entry = new LogEntry
-                                        {
-                                            Metadata =
-                                                new Dictionary<string, object>
-                                                    {
-                                                        {
-                                                            "Classification",
-                                                            string.Empty
-                                                        },
-                                                        { "Host", FileName },
-                                                        {
-                                                            "ReceivedTime",
-                                                            DateTime.UtcNow
-                                                        }
-                                                    }
-                                        };
-
-                        if (usedGroupNames.Contains("DateTime"))
-                        {
-                            const DateTimeStyles Styles =
-                                DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces;
-                            var value = m.Groups["DateTime"].Value;
-
-                            DateTime dt;
-                            if (
-                                !DateTime.TryParseExact(
-                                    value,
-                                    DateFormats,
-                                    CultureInfo.InvariantCulture,
-                                    Styles,
-                                    out dt))
-                            {
-                                Log.Warn($"Failed to parse date '{value}'");
-                                Log.Debug("Overriding date/time that failed to parse to 'now'");
-                                dt = DateTime.UtcNow;
-                            }
-
-                            entry.DateTime = dt;
-                        }
-                        else
-                        {
-                            entry.DateTime = DateTime.UtcNow;
-                        }
-
-                        entry.Type = usedGroupNames.Contains("Type") ? m.Groups["Type"].Value : "INFO";
-                        entry.System = usedGroupNames.Contains("System") ? m.Groups["System"].Value : string.Empty;
-
-                        if (usedGroupNames.Contains(LoggerIdentifier))
-                        {
-                            entry.Source = m.Groups[LoggerIdentifier].Value;
-                            entry.System = m.Groups[LoggerIdentifier].Value;
-                        }
-
-                        if (usedGroupNames.Contains("Description"))
-                        {
-                            entry.Description = m.Groups["Description"].Value;
-                        }
-
-                        // See if we need to peek ahead.
-                        if (options == SubsequentEntryOptions.AppendToDescriptionIfNonmatching)
-                        {
-                            var keepPeeking = true;
-                            var sb = new StringBuilder();
-
-                            while (keepPeeking)
-                            {
-                                nextLine = inputStream.ReadLine();
-
-                                if (nextLine != null)
-                                {
-                                    if (patternMatching.IsMatch(nextLine))
-                                    {
-                                        keepPeeking = false;
-                                    }
-                                    else
-                                    {
-                                        sb.AppendLine(nextLine);
-                                        nextLine = null;
-                                    }
-                                }
-                            }
-
-                            if (sb.Length > 0)
-                            {
-                                sb.Insert(0, Environment.NewLine);
-                                sb.Insert(0, entry.Description);
-                                entry.Description = sb.ToString();
-                            }
-                        }
-
-                        // TODO: Basic way of identifying exceptions, other than just the word!
-                        if (entry.Description.ToUpper(CultureInfo.InvariantCulture).Contains("EXCEPTION"))
-                        {
-                            entry.Metadata.Add("Exception", true);
-                        }
-
-                        pendingQueue.Enqueue(entry);
-                        entriesAdded++;
+                        Log.Warn("Message decoding did not work!");
+                        Log.Debug($"Message: {line}");
+                        Log.Debug($"Pattern: {FileMonitorProviderSettings.MessageDecoder}");
+                        return;
                     }
+
+                    var entry = new LogEntry
+                                    {
+                                        Metadata =
+                                            new Dictionary<string, object>
+                                                {
+                                                    { "Classification", string.Empty },
+                                                    { "Host", FileName },
+                                                    {
+                                                        "ReceivedTime", DateTime.UtcNow
+                                                    }
+                                                }
+                                    };
+
+                    if (usedGroupNames.Contains("DateTime"))
+                    {
+                        const DateTimeStyles Styles = DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces;
+                        var value = m.Groups["DateTime"].Value;
+
+                        DateTime dt;
+                        if (!DateTime.TryParseExact(value, DateFormats, CultureInfo.InvariantCulture, Styles, out dt))
+                        {
+                            Log.Warn($"Failed to parse date '{value}'");
+                            Log.Debug("Overriding date/time that failed to parse to 'now'");
+                            dt = DateTime.UtcNow;
+                        }
+
+                        entry.DateTime = dt;
+                    }
+                    else
+                    {
+                        entry.DateTime = DateTime.UtcNow;
+                    }
+
+                    entry.Type = usedGroupNames.Contains("Type") ? m.Groups["Type"].Value : "INFO";
+                    entry.System = usedGroupNames.Contains("System") ? m.Groups["System"].Value : string.Empty;
+
+                    if (usedGroupNames.Contains(LoggerIdentifier))
+                    {
+                        entry.Source = m.Groups[LoggerIdentifier].Value;
+                        entry.System = m.Groups[LoggerIdentifier].Value;
+                    }
+
+                    if (usedGroupNames.Contains("Description"))
+                    {
+                        entry.Description = m.Groups["Description"].Value;
+                    }
+
+                    // See if we need to peek ahead.
+                    if (options == SubsequentEntryOptions.AppendToDescriptionIfNonmatching)
+                    {
+                        ConsumeAdditionalDescriptionLines(entry, peekingReader);
+                    }
+
+                    // TODO: Basic way of identifying exceptions, other than just the word!
+                    if (entry.Description.ToUpper(CultureInfo.InvariantCulture).Contains("EXCEPTION"))
+                    {
+                        entry.Metadata.Add("Exception", true);
+                    }
+
+                    pendingQueue.Enqueue(entry);
+                    entriesAdded++;
                 }
 
                 Log.Trace($"Added {entriesAdded} new entries");
+            }
+        }
+
+        private void ConsumeAdditionalDescriptionLines(ILogEntry entry, PeekLineStreamReader peekingReader)
+        {
+            if (peekingReader == null)
+            {
+                throw new ArgumentNullException(nameof(peekingReader));
+            }
+
+            var keepPeeking = true;
+            var sb = new StringBuilder();
+
+            // TODO: Create wrapper for this, using "pattern" to determine how long to keep reading
+            while (keepPeeking)
+            {
+                var nextLine = peekingReader.PeekLine();
+                if (nextLine != null)
+                {
+                    if (patternMatching.IsMatch(nextLine))
+                    {
+                        keepPeeking = false;
+                    }
+                    else
+                    {
+                        sb.AppendLine(nextLine);
+                    }
+                }
+            }
+
+            if (sb.Length > 0)
+            {
+                sb.Insert(0, Environment.NewLine);
+                sb.Insert(0, entry.Description);
+                entry.Description = sb.ToString();
             }
         }
 
@@ -409,18 +401,5 @@
 
             public string Description => "Monitor a text file for new log entries.";
         }
-    }
-
-    public enum SubsequentEntryOptions
-    {
-        /// <summary>
-        /// Each line is individually validated, if it fails to match pattern, log it and ignore it.
-        /// </summary>
-        TreatIndividually = 0,
-
-        /// <summary>
-        /// If the next line(s) do not match the pattern, keep appending the lines to the description field.
-        /// </summary>
-        AppendToDescriptionIfNonmatching = 1
     }
 }
