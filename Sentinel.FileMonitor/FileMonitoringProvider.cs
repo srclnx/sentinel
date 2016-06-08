@@ -239,9 +239,7 @@
 
                                 using (var sr = new StringReader(sb.ToString()))
                                 {
-                                    // TODO: get this setting from user
-                                    var options = SubsequentEntryOptions.AppendToDescriptionIfNonmatching;
-                                    DecodeAndQueueMessages(sr, options);
+                                    DecodeAndQueueMessages(sr);
                                 }
 
                                 // Can we determine whether any tailing data was unprocessed?
@@ -261,43 +259,39 @@
             }
         }
 
-        private void DecodeAndQueueMessages(TextReader inputStream, SubsequentEntryOptions options)
+        private void DecodeAndQueueMessages(TextReader inputStream)
         {
             if (inputStream == null)
             {
                 throw new ArgumentNullException(nameof(inputStream));
             }
 
-            var peekingReader = new PeekLineTextReader(inputStream);
-            var entriesAdded = 0;
+            Debug.Assert(patternMatching != null, "Regular expression has not be set");
 
             lock (pendingQueue)
             {
-                for (var line = peekingReader.ReadLine(); line != null; line = peekingReader.ReadLine())
+                var messages = LogMessageEntryConsumer.GetMessages(inputStream, patternMatching);
+                var entriesAdded = 0;
+
+                foreach (var message in messages)
                 {
-                    Debug.Assert(patternMatching != null, "Regular expression has not be set");
-                    var m = patternMatching.Match(line);
+                    var m = patternMatching.Match(message.Entry);
 
                     if (!m.Success)
                     {
                         Log.Warn("Message decoding did not work!");
-                        Log.Debug($"Message: {line}");
+                        Log.Debug($"Message: {message.Entry}");
                         Log.Debug($"Pattern: {FileMonitorProviderSettings.MessageDecoder}");
                         return;
                     }
 
-                    var entry = new LogEntry
-                                    {
-                                        Metadata =
-                                            new Dictionary<string, object>
-                                                {
-                                                    { "Classification", string.Empty },
-                                                    { "Host", FileName },
-                                                    {
-                                                        "ReceivedTime", DateTime.UtcNow
-                                                    }
-                                                }
-                                    };
+                    var meta = new Dictionary<string, object>
+                                   {
+                                       { "Classification", string.Empty },
+                                       { "Host", FileName },
+                                       { "ReceivedTime", DateTime.UtcNow }
+                                   };
+                    var entry = new LogEntry { Metadata = meta };
 
                     if (usedGroupNames.Contains("DateTime"))
                     {
@@ -330,13 +324,22 @@
 
                     if (usedGroupNames.Contains("Description"))
                     {
-                        entry.Description = m.Groups["Description"].Value;
-                    }
+                        var description = m.Groups["Description"].Value;
 
-                    // See if we need to peek ahead.
-                    if (options == SubsequentEntryOptions.AppendToDescriptionIfNonmatching)
-                    {
-                        ConsumeAdditionalDescriptionLines(entry, peekingReader);
+                        if (message.Extra != null && message.Extra.Any())
+                        {
+                            var sb = new StringBuilder(description);
+                            sb.AppendLine();
+
+                            foreach (var extraLine in message.Extra)
+                            {
+                                sb.AppendLine(extraLine);
+                            }
+
+                            description = sb.ToString();
+                        }
+
+                        entry.Description = description;
                     }
 
                     // TODO: Basic way of identifying exceptions, other than just the word!
@@ -353,41 +356,6 @@
             }
         }
 
-        private void ConsumeAdditionalDescriptionLines(ILogEntry entry, PeekLineTextReader peekingReader)
-        {
-            if (peekingReader == null)
-            {
-                throw new ArgumentNullException(nameof(peekingReader));
-            }
-
-            var keepPeeking = true;
-            var sb = new StringBuilder();
-
-            // TODO: Create wrapper for this, using "pattern" to determine how long to keep reading
-            while (keepPeeking)
-            {
-                var nextLine = peekingReader.PeekLine();
-                if (nextLine != null)
-                {
-                    if (patternMatching.IsMatch(nextLine))
-                    {
-                        keepPeeking = false;
-                    }
-                    else
-                    {
-                        sb.AppendLine(nextLine);
-                    }
-                }
-            }
-
-            if (sb.Length > 0)
-            {
-                sb.Insert(0, Environment.NewLine);
-                sb.Insert(0, entry.Description);
-                entry.Description = sb.ToString();
-            }
-        }
-
         private void DoWorkComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             Worker.CancelAsync();
@@ -400,77 +368,6 @@
             public string Name => "File Monitoring Provider";
 
             public string Description => "Monitor a text file for new log entries.";
-        }
-    }
-
-    public class LogMessageEntryConsumer
-    {
-        private static readonly ILog Log = LogManager.GetLogger(nameof(LogMessageEntryConsumer));
-
-        public static IEnumerable<LogMessage> GetMessages(TextReader inputStream, Regex messageStartPattern)
-        {
-            if (inputStream == null)
-            {
-                throw new ArgumentNullException(nameof(inputStream));
-            }
-
-            if (messageStartPattern == null)
-            {
-                throw new ArgumentNullException(nameof(messageStartPattern));
-            }
-
-            var messages = new List<LogMessage>();
-            var peekingReader = new PeekLineTextReader(inputStream);
-
-            for (var line = peekingReader.ReadLine(); line != null; line = peekingReader.ReadLine())
-            {
-                if (!messageStartPattern.IsMatch(line))
-                {
-                    Log.Warn($"Expecting something that matches the pattern, but got {line}");
-                }
-                else
-                {
-                    var message = new LogMessage
-                    {
-                        Entry = line
-                    };
-
-                    List<string> extras = null;
-
-                    // See if any extra.
-                    for (; ;)
-                    {
-                        var nextLine = peekingReader.PeekLine();
-
-                        if (nextLine != null)
-                        {
-                            if (messageStartPattern.IsMatch(nextLine))
-                            {
-                                break;
-                            }
-
-                            if (extras == null)
-                            {
-                                extras = new List<string>();
-                            }
-
-                            extras.Add(nextLine);
-                        }
-                    }
-
-                    message.Extra = extras;
-                    messages.Add(message);
-                }
-            }
-
-            return messages;
-        }
-
-        public class LogMessage
-        {
-            public string Entry { get; set; }
-
-            public IList<string> Extra { get; set; }
         }
     }
 }

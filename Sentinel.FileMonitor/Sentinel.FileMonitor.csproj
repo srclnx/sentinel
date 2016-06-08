@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="IFileMonitoringProviderSettings.cs" />
     <Compile Include="LogEntry.cs" />
+    <Compile Include="LogMessageEntryConsumer.cs" />
     <Compile Include="MessageFormatPage.xaml.cs">
       <DependentUpon>MessageFormatPage.xaml</DependentUpon>
     </Compile>
