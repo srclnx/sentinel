@@ -43,20 +43,20 @@
         {
             settings.ThrowIfNull(nameof(settings));
 
-            var fileSettings = settings as IFileMonitoringProviderSettings;
+            FileMonitorProviderSettings = settings as IFileMonitoringProviderSettings;
 
             Debug.Assert(
-                fileSettings != null,
+                FileMonitorProviderSettings != null,
                 "The FileMonitoringProvider class expects configuration information to be of IFileMonitoringProviderSettings type");
 
-            ProviderSettings = fileSettings;
-            FileName = fileSettings.FileName;
+            ProviderSettings = FileMonitorProviderSettings;
+            FileName = FileMonitorProviderSettings.FileName;
             Information = settings.Info;
-            refreshInterval = fileSettings.RefreshPeriod;
-            loadExistingContent = fileSettings.LoadExistingContent;
-            patternMatching = new Regex(fileSettings.MessageDecoder, RegexOptions.Singleline | RegexOptions.Compiled);
+            refreshInterval = FileMonitorProviderSettings.RefreshPeriod;
+            loadExistingContent = FileMonitorProviderSettings.LoadExistingContent;
+            patternMatching = new Regex(FileMonitorProviderSettings.MessageDecoder, RegexOptions.Singleline | RegexOptions.Compiled);
 
-            PredetermineGroupNames(fileSettings.MessageDecoder);
+            PredetermineGroupNames(FileMonitorProviderSettings.MessageDecoder);
 
             // Chain up callbacks to the workers.
             Worker.DoWork += DoWork;
@@ -84,6 +84,8 @@
 
         private static string[] DateFormats { get; } = { "d", "yyyy-MM-dd HH:mm:ss,fff", "O" };
 
+        private IFileMonitoringProviderSettings FileMonitorProviderSettings { get; }
+
         private string FileName { get; }
 
         private BackgroundWorker Worker { get; set; } = new BackgroundWorker();
@@ -97,7 +99,7 @@
 
             lock (pendingQueue)
             {
-                Log.Trace(string.Format(CultureInfo.InvariantCulture, "Starting of file-monitor upon {0}", FileName));
+                Log.Trace($"Starting of file-monitor upon {FileName}");
             }
 
             Worker.RunWorkerAsync();
@@ -143,13 +145,9 @@
                 {
                     if (pendingQueue.Any())
                     {
-                        Log.Trace(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "Adding a batch of {0} entries to the logger",
-                                pendingQueue.Count()));
+                        Log.Trace($"Adding a batch of {pendingQueue.Count()} entries to the logger");
                         Logger.AddBatch(pendingQueue);
-                        Trace.WriteLine("Done adding the batch");
+                        Log.Trace("Done adding the batch");
                     }
                 }
             }
@@ -217,38 +215,47 @@
 
                     if (fileLength > positionReadTo)
                     {
-                        using (var fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.Write))
+                        try
                         {
-                            var position = fs.Seek(positionReadTo, SeekOrigin.Begin);
-                            Debug.Assert(position == positionReadTo, "Seek did not go to where we asked.");
-
-                            // Calculate length of file.
-                            var bytesToRead = fileLength - position;
-                            Debug.Assert(bytesToRead < int.MaxValue, "Too much data to read using this method!");
-
-                            var buffer = new byte[bytesToRead];
-
-                            var bytesSuccessfullyRead = fs.Read(buffer, 0, (int)bytesToRead);
-                            Debug.Assert(bytesSuccessfullyRead == bytesToRead, "Did not get as much as expected!");
-
-                            // Put results into a buffer (prepend any unprocessed data retained from last read).
-                            sb.Length = 0;
-                            sb.Append(incomplete);
-                            sb.Append(Encoding.ASCII.GetString(buffer, 0, bytesSuccessfullyRead));
-
-                            using (var sr = new StringReader(sb.ToString()))
+                            using (var fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
-                                while (sr.Peek() != -1)
+                                var position = fs.Seek(positionReadTo, SeekOrigin.Begin);
+                                Debug.Assert(position == positionReadTo, "Seek did not go to where we asked.");
+
+                                // Calculate length of file.
+                                var bytesToRead = fileLength - position;
+                                Debug.Assert(bytesToRead < int.MaxValue, "Too much data to read using this method!");
+
+                                var buffer = new byte[bytesToRead];
+
+                                var bytesSuccessfullyRead = fs.Read(buffer, 0, (int)bytesToRead);
+                                Debug.Assert(bytesSuccessfullyRead == bytesToRead, "Did not get as much as expected!");
+
+                                // Put results into a buffer (prepend any unprocessed data retained from last read).
+                                sb.Length = 0;
+                                sb.Append(incomplete);
+                                sb.Append(Encoding.ASCII.GetString(buffer, 0, bytesSuccessfullyRead));
+
+                                using (var sr = new StringReader(sb.ToString()))
                                 {
-                                    var line = sr.ReadLine();
+                                    while (sr.Peek() != -1)
+                                    {
+                                        var line = sr.ReadLine();
 
-                                    // Trace.WriteLine("Read: " + line);
-                                    DecodeAndQueueMessage(line);
+                                        // Trace.WriteLine("Read: " + line);
+                                        DecodeAndQueueMessage(line);
+                                    }
                                 }
-                            }
 
-                            // Can we determine whether any tailing data was unprocessed?
-                            positionReadTo = position + bytesSuccessfullyRead;
+                                // Can we determine whether any tailing data was unprocessed?
+                                positionReadTo = position + bytesSuccessfullyRead;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.Warn("Exception caught processing file entries", exception);
+
+                            // TODO: determine fatal conditions.
                         }
                     }
                 }
@@ -262,14 +269,16 @@
             Debug.Assert(patternMatching != null, "Regular expression has not be set");
             var m = patternMatching.Match(message);
 
-            if (!m.Success)
-            {
-                Trace.WriteLine("Message decoding did not work!");
-                return;
-            }
-
             lock (pendingQueue)
             {
+                if (!m.Success)
+                {
+                    Log.Warn("Message decoding did not work!");
+                    Log.Debug($"Message: {message}");
+                    Log.Debug($"Pattern: {FileMonitorProviderSettings.MessageDecoder}");
+                    return;
+                }
+
                 var entry = new LogEntry
                                 {
                                     Metadata = new Dictionary<string, object>
