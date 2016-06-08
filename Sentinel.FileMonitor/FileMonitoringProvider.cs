@@ -402,4 +402,75 @@
             public string Description => "Monitor a text file for new log entries.";
         }
     }
+
+    public class LogMessageEntryConsumer
+    {
+        private static readonly ILog Log = LogManager.GetLogger(nameof(LogMessageEntryConsumer));
+
+        public static IEnumerable<LogMessage> GetMessages(TextReader inputStream, Regex messageStartPattern)
+        {
+            if (inputStream == null)
+            {
+                throw new ArgumentNullException(nameof(inputStream));
+            }
+
+            if (messageStartPattern == null)
+            {
+                throw new ArgumentNullException(nameof(messageStartPattern));
+            }
+
+            var messages = new List<LogMessage>();
+            var peekingReader = new PeekLineTextReader(inputStream);
+
+            for (var line = peekingReader.ReadLine(); line != null; line = peekingReader.ReadLine())
+            {
+                if (!messageStartPattern.IsMatch(line))
+                {
+                    Log.Warn($"Expecting something that matches the pattern, but got {line}");
+                }
+                else
+                {
+                    var message = new LogMessage
+                    {
+                        Entry = line
+                    };
+
+                    List<string> extras = null;
+
+                    // See if any extra.
+                    for (; ;)
+                    {
+                        var nextLine = peekingReader.PeekLine();
+
+                        if (nextLine != null)
+                        {
+                            if (messageStartPattern.IsMatch(nextLine))
+                            {
+                                break;
+                            }
+
+                            if (extras == null)
+                            {
+                                extras = new List<string>();
+                            }
+
+                            extras.Add(nextLine);
+                        }
+                    }
+
+                    message.Extra = extras;
+                    messages.Add(message);
+                }
+            }
+
+            return messages;
+        }
+
+        public class LogMessage
+        {
+            public string Entry { get; set; }
+
+            public IList<string> Extra { get; set; }
+        }
+    }
 }
