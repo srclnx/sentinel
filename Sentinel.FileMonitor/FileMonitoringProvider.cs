@@ -207,7 +207,6 @@
 
                     var fileLength = fi.Length;
 
-                    // TODO: what happens if file get shortened?  E.g. rolled over to a new one.
                     if (fileLength < positionReadTo)
                     {
                         Log.Debug("Detected file truncation, rollover or other such event on the file being monitored");
