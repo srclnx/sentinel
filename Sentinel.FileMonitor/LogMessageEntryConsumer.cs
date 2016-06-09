@@ -69,12 +69,5 @@ namespace Sentinel.FileMonitor
             Log.Debug($"Found {messages.Count} message(s)");
             return messages;
         }
-
-        public class LogMessage
-        {
-            public string Entry { get; set; }
-
-            public IList<string> Extra { get; set; }
-        }
     }
 }

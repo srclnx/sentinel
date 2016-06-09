@@ -68,6 +68,7 @@
     <Compile Include="CustomMessageDecoderPage.xaml.cs">
       <DependentUpon>CustomMessageDecoderPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Support\DateParserHelper.cs" />
     <Compile Include="FileMonitoringProvider.cs" />
     <Compile Include="FileMonitoringProviderSettings.cs" />
     <Compile Include="FileMonitorProviderPage.xaml.cs">
@@ -75,6 +76,7 @@
     </Compile>
     <Compile Include="IFileMonitoringProviderSettings.cs" />
     <Compile Include="LogEntry.cs" />
+    <Compile Include="LogMessage.cs" />
     <Compile Include="LogMessageEntryConsumer.cs" />
     <Compile Include="MessageFormatPage.xaml.cs">
       <DependentUpon>MessageFormatPage.xaml</DependentUpon>
@@ -94,7 +96,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ProviderRegistrationInformation.cs" />
-    <Compile Include="SubsequentEntryOptions.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -1,9 +1,11 @@
 ﻿namespace Sentinel.FileMonitor
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -17,6 +19,8 @@
     using Sentinel.Interfaces;
     using Sentinel.Interfaces.CodeContracts;
     using Sentinel.Interfaces.Providers;
+
+    using LogMessageMetaCollection = System.Collections.Generic.IDictionary<string,object>;
 
     public class FileMonitoringProvider : ILogProvider, IDisposable
     {
@@ -32,11 +36,11 @@
 
         private readonly int refreshInterval = 250;
 
-        private readonly List<string> usedGroupNames = new List<string>();
-
         private long positionReadTo;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        private LogFieldMapper FieldMapper { get; }
+
+        [SuppressMessage(
             "Microsoft.Reliability",
             "CA2000: DisposeObjectsBeforeLosingScope",
             Justification = "Both Worker and PurgeWorker are disposed in the IDispose implementation (or finalizer)")]
@@ -57,7 +61,16 @@
             loadExistingContent = FileMonitorProviderSettings.LoadExistingContent;
             patternMatching = new Regex(FileMonitorProviderSettings.MessageDecoder, RegexOptions.Singleline | RegexOptions.Compiled);
 
-            PredetermineGroupNames(FileMonitorProviderSettings.MessageDecoder);
+            FieldMapper = new LogFieldMapper();
+            FieldMapper.AddMapping("Type", (v, e, m) => e.Type = (string)v ?? "INFO");
+            FieldMapper.AddMapping("System", (v, e, m) => e.System = (string)v);
+            FieldMapper.AddMapping("DateTime", (v, e, m) => e.DateTime = DateParserHelper.ParseDateTime((string)v) ?? DateTime.UtcNow);
+            FieldMapper.AddMapping("Logger", (v, e, m) => e.Source = (string)v);
+            FieldMapper.AddMapping("Description", (v, e, m) => e.Description = CombineLines((string)v, m.Extra));
+            FieldMapper.AddMapping("Thread", (v, e, m) => e.Thread = (string)v);
+            FieldMapper.AddMetaMapping("Classification", (v, meta, m) => meta.Add("Classification", v));
+            FieldMapper.AddMetaMapping("Host", (v, meta, m) => meta.Add("Host", FileName));
+            FieldMapper.AddMetaMapping("ReceivedTime", (v, meta, m) => meta.Add("ReceivedTime", DateTime.UtcNow));
 
             // Chain up callbacks to the workers.
             Worker.DoWork += DoWork;
@@ -82,8 +95,6 @@
         public string Name { get; set; }
 
         public bool IsActive => Worker.IsBusy;
-
-        private static string[] DateFormats { get; } = { "d", "yyyy-MM-dd HH:mm:ss,fff", "O" };
 
         private IFileMonitoringProviderSettings FileMonitorProviderSettings { get; }
 
@@ -154,42 +165,13 @@
             }
         }
 
-        private void PredetermineGroupNames(string messageDecoder)
-        {
-            var decoder = messageDecoder.ToUpperInvariant();
-            if (decoder.Contains("(?<DESCRIPTION>"))
-            {
-                usedGroupNames.Add("Description");
-            }
-
-            if (decoder.Contains("(?<DATETIME>"))
-            {
-                usedGroupNames.Add("DateTime");
-            }
-
-            if (decoder.Contains("(?<TYPE>"))
-            {
-                usedGroupNames.Add("Type");
-            }
-
-            if (decoder.Contains("(?<LOGGER>"))
-            {
-                usedGroupNames.Add(LoggerIdentifier);
-            }
-
-            if (decoder.Contains("(?<SYSTEM>"))
-            {
-                usedGroupNames.Add("System");
-            }
-        }
-
         private void DoWork(object sender, DoWorkEventArgs e)
         {
             // Read existing content.
             var fi = new FileInfo(FileName);
 
             // Keep hold of incomplete lines, if any.
-            var incomplete = string.Empty;
+            var incomplete = String.Empty;
             var sb = new StringBuilder();
 
             if (!loadExistingContent)
@@ -274,73 +256,9 @@
 
                 foreach (var message in messages)
                 {
-                    var m = patternMatching.Match(message.Entry);
+                    var entry = PopulateLogEntry(message, patternMatching, FieldMapper);
 
-                    if (!m.Success)
-                    {
-                        Log.Warn("Message decoding did not work!");
-                        Log.Debug($"Message: {message.Entry}");
-                        Log.Debug($"Pattern: {FileMonitorProviderSettings.MessageDecoder}");
-                        return;
-                    }
-
-                    var meta = new Dictionary<string, object>
-                                   {
-                                       { "Classification", string.Empty },
-                                       { "Host", FileName },
-                                       { "ReceivedTime", DateTime.UtcNow }
-                                   };
-                    var entry = new LogEntry { Metadata = meta };
-
-                    if (usedGroupNames.Contains("DateTime"))
-                    {
-                        const DateTimeStyles Styles = DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces;
-                        var value = m.Groups["DateTime"].Value;
-
-                        DateTime dt;
-                        if (!DateTime.TryParseExact(value, DateFormats, CultureInfo.InvariantCulture, Styles, out dt))
-                        {
-                            Log.Warn($"Failed to parse date '{value}'");
-                            Log.Debug("Overriding date/time that failed to parse to 'now'");
-                            dt = DateTime.UtcNow;
-                        }
-
-                        entry.DateTime = dt;
-                    }
-                    else
-                    {
-                        entry.DateTime = DateTime.UtcNow;
-                    }
-
-                    entry.Type = usedGroupNames.Contains("Type") ? m.Groups["Type"].Value : "INFO";
-                    entry.System = usedGroupNames.Contains("System") ? m.Groups["System"].Value : string.Empty;
-
-                    if (usedGroupNames.Contains(LoggerIdentifier))
-                    {
-                        entry.Source = m.Groups[LoggerIdentifier].Value;
-                        entry.System = m.Groups[LoggerIdentifier].Value;
-                    }
-
-                    if (usedGroupNames.Contains("Description"))
-                    {
-                        var description = m.Groups["Description"].Value;
-
-                        if (message.Extra != null && message.Extra.Any())
-                        {
-                            var sb = new StringBuilder(description);
-                            sb.AppendLine();
-
-                            foreach (var extraLine in message.Extra)
-                            {
-                                sb.AppendLine(extraLine);
-                            }
-
-                            description = sb.ToString();
-                        }
-
-                        entry.Description = description;
-                    }
-
+                    //////////////////////////////////////////////////////////////////////
                     // TODO: Basic way of identifying exceptions, other than just the word!
                     if (entry.Description.ToUpper(CultureInfo.InvariantCulture).Contains("EXCEPTION"))
                     {
@@ -355,9 +273,131 @@
             }
         }
 
+        private string CombineLines(string firstLine, IList<string> extraLines)
+        {
+            var lines = extraLines ?? Enumerable.Empty<string>();
+            return string.Join(Environment.NewLine, Enumerable.Repeat(firstLine, 1).Concat(lines));
+        }
+
         private void DoWorkComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             Worker.CancelAsync();
+        }
+
+        private ILogEntry PopulateLogEntry(LogMessage message, Regex parser, LogFieldMapper mapper)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            if (parser == null)
+            {
+                throw new ArgumentNullException(nameof(parser));
+            }
+
+            if (mapper == null)
+            {
+                throw new ArgumentNullException(nameof(mapper));
+            }
+
+            try
+            {
+                var match = parser.Match(message.Entry);
+
+                var entry = new LogEntry();
+
+                foreach (var map in mapper.Mappings)
+                {
+                    var value = match.Groups[map.FieldName]?.Value ?? map.DefaultValue;
+                    map.Writer(value, entry, message);
+                }
+
+                // TODO: meta data?
+                foreach (var metaMapEntry in mapper.MetaMappings)
+                {
+                    if (entry.Metadata == null)
+                    {
+                        entry.Metadata = new Dictionary<string, object>();
+                    }
+
+                    var value = match.Groups[metaMapEntry.FieldName]?.Value ?? metaMapEntry.DefaultValue;
+                    metaMapEntry.Writer(value, entry.Metadata, message);
+                }
+
+                return entry;
+            }
+            catch (RegexMatchTimeoutException e)
+            {
+                Log.Error("Regex took too long to execute", e);
+            }
+
+            return null;
+        }
+
+        private class LogFieldMapper
+        {
+            public delegate void MapWriter(object value, ILogEntry entry, LogMessage message);
+
+            public delegate void MetaMapWriter(object value, LogMessageMetaCollection meta, LogMessage message);
+
+            public IList<LogFieldMapEntry> Mappings { get; } = new List<LogFieldMapEntry>();
+
+            public IList<LogFieldMetaMapEntry> MetaMappings { get; } = new List<LogFieldMetaMapEntry>();
+
+            public void AddMapping(string fieldName, MapWriter writer, object defaultValue = null)
+            {
+                var mapEntry = new LogFieldMapEntry(fieldName, writer);
+
+                if (defaultValue != null)
+                {
+                    mapEntry.DefaultValue = defaultValue;
+                }
+
+                Mappings.Add(mapEntry);
+            }
+
+            public void AddMetaMapping(string fieldName, MetaMapWriter writer, object defaultValue = null)
+            {
+                var metaMapEntry = new LogFieldMetaMapEntry(fieldName, writer);
+
+                if (defaultValue != null)
+                {
+                    metaMapEntry.DefaultValue = defaultValue;
+                }
+
+                MetaMappings.Add(metaMapEntry);
+            }
+
+            public class LogFieldMapEntry
+            {
+                public LogFieldMapEntry(string fieldName, MapWriter writer)
+                {
+                    FieldName = fieldName;
+                    Writer = writer;
+                }
+
+                public string FieldName { get; }
+
+                public MapWriter Writer { get; }
+
+                public object DefaultValue { get; set; }
+            }
+
+            public class LogFieldMetaMapEntry
+            {
+                public LogFieldMetaMapEntry(string fieldName, MetaMapWriter writer)
+                {
+                    FieldName = fieldName;
+                    Writer = writer;
+                }
+
+                public string FieldName { get; }
+
+                public MetaMapWriter Writer { get; }
+
+                public object DefaultValue { get; set; }
+            }
         }
 
         private class ProviderInfo : IProviderInfo
