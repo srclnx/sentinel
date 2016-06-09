@@ -170,7 +170,7 @@
             var fi = new FileInfo(FileName);
 
             // Keep hold of incomplete lines, if any.
-            var incomplete = String.Empty;
+            var incomplete = string.Empty;
             var sb = new StringBuilder();
 
             if (!loadExistingContent)
@@ -312,7 +312,6 @@
                     map.Writer(value, entry, message);
                 }
 
-                // TODO: meta data?
                 foreach (var metaMapEntry in mapper.MetaMappings)
                 {
                     if (entry.Metadata == null)
