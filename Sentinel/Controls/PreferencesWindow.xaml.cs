@@ -22,7 +22,18 @@
             Preferences = ServiceLocator.Instance.Get<IUserPreferences>();
             SelectedTabIndex = selectedTabIndex;
             DataContext = this;
+
+            Closing += (s, e) =>
+                           {
+                               if (HideOnClose)
+                               {
+                                   Hide();
+                                   e.Cancel = true;
+                               }
+                           };
         }
+
+        public bool HideOnClose { get; set; }
 
         // ReSharper disable once MemberCanBePrivate.Global
         public int SelectedTabIndex { get; set; }
@@ -33,6 +44,18 @@
         private void Window_Closed(object sender, EventArgs e)
         {
             Preferences.Show = false;
+        }
+
+        public void Launch()
+        {
+            Owner = Application.Current.MainWindow;
+
+            if (WindowState == WindowState.Minimized)
+            {
+                WindowState = WindowState.Normal;
+            }
+
+            Show();
         }
     }
 }

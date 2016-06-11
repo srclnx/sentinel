@@ -223,6 +223,9 @@
     <Compile Include="Controls\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HighlightersFlyout.xaml.cs">
+      <DependentUpon>HighlightersFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\RecentFileInfo.cs" />
     <Compile Include="Controls\WindowPlacementInfo.cs" />
     <Compile Include="Extractors\ExtractingService.cs" />
@@ -277,6 +280,7 @@
     <Compile Include="Interfaces\LinqHelpers.cs" />
     <Compile Include="Interfaces\LogEntryField.cs" />
     <Compile Include="Interfaces\MatchMode.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="StartUp\FileMonitorOptions.cs" />
     <Compile Include="StartUp\Log4NetOptions.cs" />
     <Compile Include="Logs\Interfaces\ILogFileExporter.cs" />
@@ -341,6 +345,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\HighlightersFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

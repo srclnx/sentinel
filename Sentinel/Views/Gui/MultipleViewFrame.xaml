@@ -4,11 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Wpf="clr-namespace:Sentinel.Support.Wpf"
              xmlns:Converters="clr-namespace:Sentinel.Support.Converters"
+             xmlns:controls="clr-namespace:Sentinel.Controls"
+             xmlns:frames="clr-namespace:Sentinel.Views.Gui"
              mc:Ignorable="d"
              x:Class="Sentinel.Views.Gui.MultipleViewFrame"
              x:Name="UserControl"
              MinHeight="100"
-             MinWidth="300">
+             MinWidth="300"
+             d:DataContext="{d:DesignInstance controls:MainWindow}">
 
     <UserControl.Resources>
         <Style TargetType="{x:Type Image}">
@@ -35,11 +38,12 @@
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ToolBarTray Grid.Row="0"
+        <ToolBarTray Grid.Row="1"
                      Grid.Column="0"
                      Grid.ColumnSpan="2"
                      x:Name="toolBarPanel1">
@@ -131,7 +135,7 @@
             
         </ToolBarTray>
 
-        <DockPanel Grid.Row="1">
+        <DockPanel Grid.Row="2">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -180,7 +184,7 @@
                 </DockPanel>
             </Grid>
         </DockPanel>
-        <TextBlock Grid.Row="4"
+        <TextBlock Grid.Row="3"
                    Grid.ColumnSpan="2"
                    Margin="0,2,0,0"
                    Text="{Binding PrimaryView.Status}" />

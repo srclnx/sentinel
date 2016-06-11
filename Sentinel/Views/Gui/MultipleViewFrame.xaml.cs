@@ -12,6 +12,8 @@
     using Sentinel.Services;
     using Sentinel.Views.Interfaces;
 
+    using WpfExtras;
+
     /// <summary>
     /// Interaction logic for MultipleViewFrame.xaml
     /// </summary>
@@ -54,6 +56,8 @@
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public ICommand OpenHighlightersFlyoutCommand { get; private set; }
 
         public ICommand Clear { get; private set; }
 

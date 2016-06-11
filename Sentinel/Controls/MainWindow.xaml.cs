@@ -18,6 +18,8 @@
 
     using Common.Logging;
 
+    using MahApps.Metro.Controls;
+
     using Microsoft.Win32;
 
     using Sentinel.Classification.Interfaces;
@@ -70,6 +72,8 @@
             // Get recently opened files
             GetRecentlyOpenedFiles();
         }
+
+        public ICommand OpenHighlightersFlyoutCommand { get; set; }
 
         // ReSharper disable once MemberCanBePrivate.Global
         public ICommand Add { get; private set; }
@@ -418,6 +422,7 @@
             NewSession = new DelegateCommand(NewSessionAction);
             LoadSession = new DelegateCommand(LoadSessionAction);
             RecentFiles = new ObservableCollection<string>(recentFilePathList.Take(13));
+            OpenHighlightersFlyoutCommand = new DelegateCommand(ShowHighlightersFlyout);
 
             BindViewToViewModel();
 
@@ -967,5 +972,24 @@
 
             recentFilePathList = recentFileInfo?.RecentFilePaths.ToList() ?? new List<string>();
         }
+
+        private void ShowPreferencesDialog(object sender, RoutedEventArgs e)
+        {
+            if (preferencesWindow == null)
+            {
+                preferencesWindow = new PreferencesWindow();
+                preferencesWindow.Closed += (o, args) => preferencesWindow = null;
+            }
+
+            preferencesWindow.Launch();
+        }
+
+        private void ShowHighlightersFlyout(object obj)
+        {
+            // Find the right one
+            var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is HighlightersFlyout);
+            flyout.IsOpen = !flyout.IsOpen;
+        }
+
     }
 }

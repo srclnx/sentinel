@@ -1,18 +1,18 @@
-﻿<Window x:Class="Sentinel.Highlighters.Gui.AddEditHighlighterWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:SentinelInterfaces="clr-namespace:Sentinel.Interfaces"
-        xmlns:Converters="clr-namespace:Sentinel.Support.Converters"
-        xmlns:converters="clr-namespace:WpfExtras.Converters;assembly=WpfExtras"
-        Title="Add / Edit Highlighter"
-        ResizeMode="NoResize"
-        SizeToContent="WidthAndHeight"
-        WindowStyle="SingleBorderWindow"
-        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-        WindowStartupLocation="CenterOwner">
+﻿<metro:MetroWindow x:Class="Sentinel.Highlighters.Gui.AddEditHighlighterWindow"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                   xmlns:SentinelInterfaces="clr-namespace:Sentinel.Interfaces"
+                   xmlns:converters="clr-namespace:WpfExtras.Converters;assembly=WpfExtras"
+                   xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   Title="Add / Edit Highlighter"
+                   ResizeMode="NoResize"
+                   SizeToContent="WidthAndHeight"
+                   WindowStyle="SingleBorderWindow"
+                   Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                   WindowStartupLocation="CenterOwner">
 
-    <Window.Resources>
+    <metro:MetroWindow.Resources>
         
         <ObjectDataProvider x:Key="logEntryField"
                             MethodName="GetValues"
@@ -55,7 +55,7 @@
 
         <converters:BooleanToDisabledConverter x:Key="checkboxToDisableConverter" />
         <converters:VisibilityToCollapsedConverter x:Key="collapsedVisibilityConverter" />
-    </Window.Resources>
+    </metro:MetroWindow.Resources>
 
     <DockPanel Height="Auto"
                Margin="5">
@@ -182,4 +182,4 @@
                        Text="Warning, the colours selected may not contrast well!" />
         </Grid>
     </DockPanel>
-</Window>
+</metro:MetroWindow>
