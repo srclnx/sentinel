@@ -9,12 +9,15 @@
     using System.Text;
     using System.Windows;
 
+    using Common.Logging;
+
     using Newtonsoft.Json.Linq;
 
     using Sentinel.Classification;
     using Sentinel.Classification.Interfaces;
     using Sentinel.Extractors;
     using Sentinel.Extractors.Interfaces;
+    using Sentinel.FileMonitor;
     using Sentinel.Filters;
     using Sentinel.Filters.Interfaces;
     using Sentinel.Highlighters;
@@ -39,10 +42,15 @@
 
     using WpfExtras;
 
+    using ILogManager = Sentinel.Logs.Interfaces.ILogManager;
+    using LogManager = Sentinel.Logs.LogManager;
+
     [DataContract]
     public class SessionManager : ISessionManager
     {
         private const char ObjectSeparator = '~';
+
+        private static readonly ILog Log = Common.Logging.LogManager.GetLogger<SessionManager>();
 
         private bool serviceLocatorIsFresh;
 
@@ -107,6 +115,8 @@
 
         public void LoadSession(string fileName)
         {
+            Log.Trace($"Load session: {fileName}");
+
             var fileText = File.ReadAllText(fileName);
             var jsonObjects = fileText.Split(ObjectSeparator);
 
@@ -213,18 +223,25 @@
         {
             if (jsonObjectStrings == null)
             {
+                Log.Debug("Service locator was not passed any sesions");
                 return;
             }
+
+            var objectStrings = jsonObjectStrings as string[] ?? jsonObjectStrings.ToArray();
+
+            Log.Trace($"Loading service locator with {objectStrings.Length} sections");
 
             var locator = ServiceLocator.Instance;
             var pendingProviderRecords = new List<PendingProviderRecord>();
 
-            foreach (var objString in jsonObjectStrings)
+            foreach (var objString in objectStrings)
             {
                 if (!string.IsNullOrWhiteSpace(objString))
                 {
                     var deserializedObj = JObject.Parse(objString);
                     var typeString = deserializedObj["$type"].ToString();
+
+                    Log.Debug($"Processing section for type {typeString}");
 
                     if (typeString.Contains(typeof(UserPreferences).ToString()))
                     {
@@ -294,6 +311,20 @@
                                     Info = thisSetting.Info,
                                     Settings = thisSetting
                                 });
+                            }
+                            else if (
+                                providerSetting["$type"].ToString()
+                                    .Contains(typeof(FileMonitoringProviderSettings).Name))
+                            {
+                                var thisSetting =
+                                    JsonHelper.DeserializeFromString<FileMonitoringProviderSettings>(
+                                        providerSetting.ToString());
+                                pendingProviderRecords.Add(
+                                    new PendingProviderRecord
+                                        {
+                                            Info = thisSetting.Info,
+                                            Settings = thisSetting
+                                        });
                             }
                         }
                     }

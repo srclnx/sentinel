@@ -47,8 +47,17 @@
                 return;
             }
 
+            // ReSharper disable once UseStringInterpolation
             var errorString =
-                $"Sender: {sender} FirstChanceException raised in {AppDomain.CurrentDomain.FriendlyName} : Message -- {e.Exception.Message} :: InnerException -- {e.Exception.InnerException?.Message ?? string.Empty} :: TargetSite -- {e.Exception.TargetSite?.Name ?? string.Empty} :: StackTrace -- {e.Exception.StackTrace ?? string.Empty} :: HelpLink -- {e.Exception.HelpLink ?? string.Empty} ";
+                string.Format(
+                    "Sender: {0} FirstChanceException raised in {1} : Message -- {2} :: InnerException -- {3} :: TargetSite -- {4} :: StackTrace -- {5} :: HelpLink -- {6} ",
+                    sender,
+                    AppDomain.CurrentDomain.FriendlyName,
+                    e.Exception.Message,
+                    e.Exception.InnerException?.Message ?? string.Empty,
+                    e.Exception.TargetSite?.Name ?? string.Empty,
+                    e.Exception.StackTrace ?? string.Empty,
+                    e.Exception.HelpLink ?? string.Empty);
 
             Log.Error(errorString, e.Exception);
         }
