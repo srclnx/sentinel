@@ -19,7 +19,7 @@
     using Sentinel.Interfaces.CodeContracts;
     using Sentinel.Interfaces.Providers;
 
-    using LogMessageMetaCollection = System.Collections.Generic.IDictionary<string,object>;
+    using LogMessageMetaCollection = System.Collections.Generic.IDictionary<string, object>;
 
     public class FileMonitoringProvider : ILogProvider, IDisposable
     {
@@ -36,8 +36,6 @@
         private readonly int refreshInterval = 250;
 
         private long positionReadTo;
-
-        private LogFieldMapper FieldMapper { get; }
 
         [SuppressMessage(
             "Microsoft.Reliability",
@@ -94,6 +92,8 @@
         public string Name { get; set; }
 
         public bool IsActive => Worker.IsBusy;
+
+        private LogFieldMapper FieldMapper { get; }
 
         private IFileMonitoringProviderSettings FileMonitorProviderSettings { get; }
 
