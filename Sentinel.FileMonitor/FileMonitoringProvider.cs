@@ -61,9 +61,9 @@
             patternMatching = new Regex(FileMonitorProviderSettings.MessageDecoder, RegexOptions.Singleline | RegexOptions.Compiled);
 
             FieldMapper = new LogFieldMapper();
-            FieldMapper.AddMapping("Type", (v, e, m) => e.Type = (string)v ?? "INFO");
+            FieldMapper.AddMapping("Type", (v, e, m) => e.Type = SelectValueOrDefault(v, "DEBUG"));
             FieldMapper.AddMapping("System", (v, e, m) => e.System = (string)v);
-            FieldMapper.AddMapping("DateTime", (v, e, m) => e.DateTime = DateParserHelper.ParseDateTime((string)v) ?? DateTime.UtcNow);
+            FieldMapper.AddMapping("DateTime", (v, e, m) => e.DateTime = DateParserHelper.ParseDateTime((string)v, DateTime.UtcNow));
             FieldMapper.AddMapping("Logger", (v, e, m) => e.Source = (string)v);
             FieldMapper.AddMapping("Description", (v, e, m) => e.Description = CombineLines((string)v, m.Extra));
             FieldMapper.AddMapping("Thread", (v, e, m) => e.Thread = (string)v);
@@ -144,6 +144,16 @@
             Worker = null;
             PurgeWorker?.Dispose();
             PurgeWorker = null;
+        }
+
+        private static string SelectValueOrDefault(object value, string defaultValue)
+        {
+            if (string.IsNullOrWhiteSpace(value as string))
+            {
+                return defaultValue;
+            }
+
+            return value.ToString();
         }
 
         private void PurgeWorkerDoWork(object sender, DoWorkEventArgs e)

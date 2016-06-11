@@ -2,6 +2,7 @@ namespace Sentinel.FileMonitor.Support
 {
     using System;
     using System.Globalization;
+    using System.Security.Cryptography.X509Certificates;
 
     using Common.Logging;
 
@@ -23,6 +24,12 @@ namespace Sentinel.FileMonitor.Support
             }
 
             return dt;
+        }
+
+        public static DateTime ParseDateTime(string value, DateTime defaultValue)
+        {
+            var convertedValue = ParseDateTime(value);
+            return convertedValue ?? defaultValue;
         }
     }
 }
