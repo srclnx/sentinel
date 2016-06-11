@@ -28,6 +28,11 @@ namespace Sentinel.FileMonitor.Support
 
         public static DateTime ParseDateTime(string value, DateTime defaultValue)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return defaultValue;
+            }
+
             var convertedValue = ParseDateTime(value);
             return convertedValue ?? defaultValue;
         }
