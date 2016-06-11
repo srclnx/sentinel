@@ -1,24 +1,22 @@
-﻿<RibbonWindow
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:SentinelInterfaces="clr-namespace:Sentinel.Interfaces"
-    xmlns:Converters="clr-namespace:Sentinel.Support.Converters"
-    xmlns:WpfExtrasConverters="clr-namespace:WpfExtras.Converters;assembly=WpfExtras" 
-    x:Class="Sentinel.Controls.MainWindow"
-    Title="Sentinel"
-    Height="560"
-    Width="1017"
-    mc:Ignorable="d"
-    Padding="5"
-    OverridesDefaultStyle="False"
-    Loaded="OnLoaded"
-    Closing="OnClosed"
-    ResizeMode="CanResizeWithGrip">
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:SentinelInterfaces="clr-namespace:Sentinel.Interfaces"
+        xmlns:Converters="clr-namespace:Sentinel.Support.Converters"
+        xmlns:WpfExtrasConverters="clr-namespace:WpfExtras.Converters;assembly=WpfExtras"
+        x:Class="Sentinel.Controls.MainWindow"
+        Title="Sentinel"
+        Height="560"
+        Width="1017"
+        mc:Ignorable="d"
+        Loaded="OnLoaded"
+        Closing="OnClosed"
+        Background="{Binding Source={x:Static SystemColors.MenuBarBrush}}"
+        ResizeMode="CanResizeWithGrip">
 
-    <RibbonWindow.Resources>
+    <Window.Resources>
         <Style
             TargetType="{x:Type Image}">
             <Setter
@@ -66,14 +64,13 @@
             x:Key="typeToSmallImage" />
         <Converters:LongPathToShortPathConverter
             x:Key="longPathToShortPath" />
-    </RibbonWindow.Resources>
+    </Window.Resources>
 
-    <DockPanel>
+    <DockPanel Margin="3,0,3,3">
 
-        <Ribbon
-            SelectedIndex="0"
-            DockPanel.Dock="Top"
-            ShowQuickAccessToolBarOnTop="False" Margin="0,0,-0.4,0">
+        <Ribbon SelectedIndex="0"
+                DockPanel.Dock="Top"
+                Margin="0,-22,0,0">
 
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
@@ -463,9 +460,6 @@
             </RibbonTab>            
         </Ribbon>
 
-        <TabControl
-            x:Name="tabControl"
-            Grid.Row="1">
-        </TabControl>
+        <TabControl x:Name="tabControl" />
     </DockPanel>
-</RibbonWindow>
+</Window>
