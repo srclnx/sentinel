@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -13,9 +14,12 @@
 
     using Common.Logging;
 
+    using Sentinel.FileMonitor.Support;
     using Sentinel.Interfaces;
     using Sentinel.Interfaces.CodeContracts;
     using Sentinel.Interfaces.Providers;
+
+    using LogMessageMetaCollection = System.Collections.Generic.IDictionary<string,object>;
 
     public class FileMonitoringProvider : ILogProvider, IDisposable
     {
@@ -31,11 +35,11 @@
 
         private readonly int refreshInterval = 250;
 
-        private readonly List<string> usedGroupNames = new List<string>();
-
         private long positionReadTo;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        private LogFieldMapper FieldMapper { get; }
+
+        [SuppressMessage(
             "Microsoft.Reliability",
             "CA2000: DisposeObjectsBeforeLosingScope",
             Justification = "Both Worker and PurgeWorker are disposed in the IDispose implementation (or finalizer)")]
@@ -43,20 +47,29 @@
         {
             settings.ThrowIfNull(nameof(settings));
 
-            var fileSettings = settings as IFileMonitoringProviderSettings;
+            FileMonitorProviderSettings = settings as IFileMonitoringProviderSettings;
 
             Debug.Assert(
-                fileSettings != null,
+                FileMonitorProviderSettings != null,
                 "The FileMonitoringProvider class expects configuration information to be of IFileMonitoringProviderSettings type");
 
-            ProviderSettings = fileSettings;
-            FileName = fileSettings.FileName;
+            ProviderSettings = FileMonitorProviderSettings;
+            FileName = FileMonitorProviderSettings.FileName;
             Information = settings.Info;
-            refreshInterval = fileSettings.RefreshPeriod;
-            loadExistingContent = fileSettings.LoadExistingContent;
-            patternMatching = new Regex(fileSettings.MessageDecoder, RegexOptions.Singleline | RegexOptions.Compiled);
+            refreshInterval = FileMonitorProviderSettings.RefreshPeriod;
+            loadExistingContent = FileMonitorProviderSettings.LoadExistingContent;
+            patternMatching = new Regex(FileMonitorProviderSettings.MessageDecoder, RegexOptions.Singleline | RegexOptions.Compiled);
 
-            PredetermineGroupNames(fileSettings.MessageDecoder);
+            FieldMapper = new LogFieldMapper();
+            FieldMapper.AddMapping("Type", (v, e, m) => e.Type = (string)v ?? "INFO");
+            FieldMapper.AddMapping("System", (v, e, m) => e.System = (string)v);
+            FieldMapper.AddMapping("DateTime", (v, e, m) => e.DateTime = DateParserHelper.ParseDateTime((string)v) ?? DateTime.UtcNow);
+            FieldMapper.AddMapping("Logger", (v, e, m) => e.Source = (string)v);
+            FieldMapper.AddMapping("Description", (v, e, m) => e.Description = CombineLines((string)v, m.Extra));
+            FieldMapper.AddMapping("Thread", (v, e, m) => e.Thread = (string)v);
+            FieldMapper.AddMetaMapping("Classification", (v, meta, m) => meta.Add("Classification", v));
+            FieldMapper.AddMetaMapping("Host", (v, meta, m) => meta.Add("Host", FileName));
+            FieldMapper.AddMetaMapping("ReceivedTime", (v, meta, m) => meta.Add("ReceivedTime", DateTime.UtcNow));
 
             // Chain up callbacks to the workers.
             Worker.DoWork += DoWork;
@@ -82,7 +95,7 @@
 
         public bool IsActive => Worker.IsBusy;
 
-        private static string[] DateFormats { get; } = { "d", "yyyy-MM-dd HH:mm:ss,fff", "O" };
+        private IFileMonitoringProviderSettings FileMonitorProviderSettings { get; }
 
         private string FileName { get; }
 
@@ -97,7 +110,7 @@
 
             lock (pendingQueue)
             {
-                Log.Trace(string.Format(CultureInfo.InvariantCulture, "Starting of file-monitor upon {0}", FileName));
+                Log.Trace($"Starting of file-monitor upon {FileName}");
             }
 
             Worker.RunWorkerAsync();
@@ -143,49 +156,11 @@
                 {
                     if (pendingQueue.Any())
                     {
-                        Log.Trace(
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "Adding a batch of {0} entries to the logger",
-                                pendingQueue.Count()));
+                        Log.Trace($"Adding a batch of {pendingQueue.Count()} entries to the logger");
                         Logger.AddBatch(pendingQueue);
-                        Trace.WriteLine("Done adding the batch");
+                        Log.Trace("Done adding the batch");
                     }
                 }
-            }
-        }
-
-        private void PredetermineGroupNames(string messageDecoder)
-        {
-            var decoder = messageDecoder.ToUpperInvariant();
-            if (decoder.Contains("(?<DESCRIPTION>"))
-            {
-                usedGroupNames.Add("Description");
-            }
-
-            if (decoder.Contains("(?<DATETIME>"))
-            {
-                usedGroupNames.Add("DateTime");
-            }
-
-            if (decoder.Contains("(?<TYPE>"))
-            {
-                usedGroupNames.Add("Type");
-            }
-
-            if (decoder.Contains("(?<LOGGER>"))
-            {
-                usedGroupNames.Add(LoggerIdentifier);
-            }
-
-            if (decoder.Contains("(?<SYSTEM>"))
-            {
-                usedGroupNames.Add("System");
-            }
-
-            if (decoder.Contains("(?<THREAD>"))
-            {
-                usedGroupNames.Add("Thread");
             }
         }
 
@@ -213,7 +188,6 @@
 
                     var fileLength = fi.Length;
 
-                    // TODO: what happens if file get shortened?  E.g. rolled over to a new one.
                     if (fileLength < positionReadTo)
                     {
                         Log.Debug("Detected file truncation, rollover or other such event on the file being monitored");
@@ -222,38 +196,41 @@
 
                     if (fileLength > positionReadTo)
                     {
-                        using (var fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.Write))
+                        try
                         {
-                            var position = fs.Seek(positionReadTo, SeekOrigin.Begin);
-                            Debug.Assert(position == positionReadTo, "Seek did not go to where we asked.");
-
-                            // Calculate length of file.
-                            var bytesToRead = fileLength - position;
-                            Debug.Assert(bytesToRead < int.MaxValue, "Too much data to read using this method!");
-
-                            var buffer = new byte[bytesToRead];
-
-                            var bytesSuccessfullyRead = fs.Read(buffer, 0, (int)bytesToRead);
-                            Debug.Assert(bytesSuccessfullyRead == bytesToRead, "Did not get as much as expected!");
-
-                            // Put results into a buffer (prepend any unprocessed data retained from last read).
-                            sb.Length = 0;
-                            sb.Append(incomplete);
-                            sb.Append(Encoding.ASCII.GetString(buffer, 0, bytesSuccessfullyRead));
-
-                            using (var sr = new StringReader(sb.ToString()))
+                            using (var fs = fi.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
-                                while (sr.Peek() != -1)
+                                var position = fs.Seek(positionReadTo, SeekOrigin.Begin);
+                                Debug.Assert(position == positionReadTo, "Seek did not go to where we asked.");
+
+                                // Calculate length of file.
+                                var bytesToRead = fileLength - position;
+                                Debug.Assert(bytesToRead < int.MaxValue, "Too much data to read using this method!");
+
+                                var buffer = new byte[bytesToRead];
+
+                                var bytesSuccessfullyRead = fs.Read(buffer, 0, (int)bytesToRead);
+                                Debug.Assert(bytesSuccessfullyRead == bytesToRead, "Did not get as much as expected!");
+
+                                // Put results into a buffer (prepend any unprocessed data retained from last read).
+                                sb.Length = 0;
+                                sb.Append(incomplete);
+                                sb.Append(Encoding.ASCII.GetString(buffer, 0, bytesSuccessfullyRead));
+
+                                using (var sr = new StringReader(sb.ToString()))
                                 {
-                                    var line = sr.ReadLine();
-
-                                    // Trace.WriteLine("Read: " + line);
-                                    DecodeAndQueueMessage(line);
+                                    DecodeAndQueueMessages(sr);
                                 }
-                            }
 
-                            // Can we determine whether any tailing data was unprocessed?
-                            positionReadTo = position + bytesSuccessfullyRead;
+                                // Can we determine whether any tailing data was unprocessed?
+                                positionReadTo = position + bytesSuccessfullyRead;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.Warn("Exception caught processing file entries", exception);
+
+                            // TODO: determine fatal conditions.
                         }
                     }
                 }
@@ -262,81 +239,163 @@
             }
         }
 
-        private void DecodeAndQueueMessage(string message)
+        private void DecodeAndQueueMessages(TextReader inputStream)
         {
-            Debug.Assert(patternMatching != null, "Regular expression has not be set");
-            var m = patternMatching.Match(message);
-
-            if (!m.Success)
+            if (inputStream == null)
             {
-                Trace.WriteLine("Message decoding did not work!");
-                return;
+                throw new ArgumentNullException(nameof(inputStream));
             }
+
+            Debug.Assert(patternMatching != null, "Regular expression has not be set");
 
             lock (pendingQueue)
             {
-                var entry = new LogEntry
-                                {
-                                    Metadata = new Dictionary<string, object>
-                                            {
-                                                { "Classification", string.Empty },
-                                                { "Host", FileName },
-                                                { "ReceivedTime", DateTime.UtcNow }
-                                            }
-                                };
-                if (usedGroupNames.Contains("Description"))
-                {
-                    entry.Description = m.Groups["Description"].Value;
-                }
+                var messages = LogMessageEntryConsumer.GetMessages(inputStream, patternMatching);
+                var entriesAdded = 0;
 
-                if (usedGroupNames.Contains("DateTime"))
+                foreach (var message in messages)
                 {
-                    const DateTimeStyles Styles = DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces;
-                    var value = m.Groups["DateTime"].Value;
+                    var entry = PopulateLogEntry(message, patternMatching, FieldMapper);
 
-                    DateTime dt;
-                    if (
-                        !DateTime.TryParseExact(
-                            value,
-                            DateFormats,
-                            CultureInfo.InvariantCulture,
-                            Styles,
-                            out dt))
+                    //////////////////////////////////////////////////////////////////////
+                    // TODO: Basic way of identifying exceptions, other than just the word!
+                    if (entry.Description.ToUpper(CultureInfo.InvariantCulture).Contains("EXCEPTION"))
                     {
-                        Log.Warn($"Failed to parse date '{value}'");
-                        Log.Debug("Overriding date/time that failed to parse to 'now'");
-                        dt = DateTime.UtcNow;
+                        entry.Metadata.Add("Exception", true);
                     }
 
-                    entry.DateTime = dt;
-                }
-                else
-                {
-                    entry.DateTime = DateTime.UtcNow;
+                    pendingQueue.Enqueue(entry);
+                    entriesAdded++;
                 }
 
-                entry.Type = usedGroupNames.Contains("Type") ? m.Groups["Type"].Value : "INFO";
-                entry.System = usedGroupNames.Contains("System") ? m.Groups["System"].Value : string.Empty;
-                entry.Thread = usedGroupNames.Contains("Thread") ? m.Groups["Thread"].Value : string.Empty;
-
-                if (usedGroupNames.Contains(LoggerIdentifier))
-                {
-                    entry.Source = m.Groups[LoggerIdentifier].Value;
-                    entry.System = m.Groups[LoggerIdentifier].Value;
-                }
-
-                if (entry.Description.ToUpper(CultureInfo.InvariantCulture).Contains("EXCEPTION"))
-                {
-                    entry.Metadata.Add("Exception", true);
-                }
-
-                pendingQueue.Enqueue(entry);
+                Log.Trace($"Added {entriesAdded} new entries");
             }
+        }
+
+        private string CombineLines(string firstLine, IList<string> extraLines)
+        {
+            var lines = extraLines ?? Enumerable.Empty<string>();
+            return string.Join(Environment.NewLine, Enumerable.Repeat(firstLine, 1).Concat(lines));
         }
 
         private void DoWorkComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             Worker.CancelAsync();
+        }
+
+        private ILogEntry PopulateLogEntry(LogMessage message, Regex parser, LogFieldMapper mapper)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            if (parser == null)
+            {
+                throw new ArgumentNullException(nameof(parser));
+            }
+
+            if (mapper == null)
+            {
+                throw new ArgumentNullException(nameof(mapper));
+            }
+
+            try
+            {
+                var match = parser.Match(message.Entry);
+
+                var entry = new LogEntry();
+
+                foreach (var map in mapper.Mappings)
+                {
+                    var value = match.Groups[map.FieldName]?.Value ?? map.DefaultValue;
+                    map.Writer(value, entry, message);
+                }
+
+                foreach (var metaMapEntry in mapper.MetaMappings)
+                {
+                    if (entry.Metadata == null)
+                    {
+                        entry.Metadata = new Dictionary<string, object>();
+                    }
+
+                    var value = match.Groups[metaMapEntry.FieldName]?.Value ?? metaMapEntry.DefaultValue;
+                    metaMapEntry.Writer(value, entry.Metadata, message);
+                }
+
+                return entry;
+            }
+            catch (RegexMatchTimeoutException e)
+            {
+                Log.Error("Regex took too long to execute", e);
+            }
+
+            return null;
+        }
+
+        private class LogFieldMapper
+        {
+            public delegate void MapWriter(object value, ILogEntry entry, LogMessage message);
+
+            public delegate void MetaMapWriter(object value, LogMessageMetaCollection meta, LogMessage message);
+
+            public IList<LogFieldMapEntry> Mappings { get; } = new List<LogFieldMapEntry>();
+
+            public IList<LogFieldMetaMapEntry> MetaMappings { get; } = new List<LogFieldMetaMapEntry>();
+
+            public void AddMapping(string fieldName, MapWriter writer, object defaultValue = null)
+            {
+                var mapEntry = new LogFieldMapEntry(fieldName, writer);
+
+                if (defaultValue != null)
+                {
+                    mapEntry.DefaultValue = defaultValue;
+                }
+
+                Mappings.Add(mapEntry);
+            }
+
+            public void AddMetaMapping(string fieldName, MetaMapWriter writer, object defaultValue = null)
+            {
+                var metaMapEntry = new LogFieldMetaMapEntry(fieldName, writer);
+
+                if (defaultValue != null)
+                {
+                    metaMapEntry.DefaultValue = defaultValue;
+                }
+
+                MetaMappings.Add(metaMapEntry);
+            }
+
+            public class LogFieldMapEntry
+            {
+                public LogFieldMapEntry(string fieldName, MapWriter writer)
+                {
+                    FieldName = fieldName;
+                    Writer = writer;
+                }
+
+                public string FieldName { get; }
+
+                public MapWriter Writer { get; }
+
+                public object DefaultValue { get; set; }
+            }
+
+            public class LogFieldMetaMapEntry
+            {
+                public LogFieldMetaMapEntry(string fieldName, MetaMapWriter writer)
+                {
+                    FieldName = fieldName;
+                    Writer = writer;
+                }
+
+                public string FieldName { get; }
+
+                public MetaMapWriter Writer { get; }
+
+                public object DefaultValue { get; set; }
+            }
         }
 
         private class ProviderInfo : IProviderInfo
