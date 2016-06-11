@@ -148,12 +148,7 @@
 
         private static string SelectValueOrDefault(object value, string defaultValue)
         {
-            if (string.IsNullOrWhiteSpace(value as string))
-            {
-                return defaultValue;
-            }
-
-            return value.ToString();
+            return string.IsNullOrWhiteSpace(value as string) ? defaultValue : value.ToString();
         }
 
         private void PurgeWorkerDoWork(object sender, DoWorkEventArgs e)
