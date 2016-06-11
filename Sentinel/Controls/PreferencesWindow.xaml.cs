@@ -9,7 +9,7 @@
     /// <summary>
     /// Interaction logic for PreferencesWindow.xaml
     /// </summary>
-    public partial class PreferencesWindow : Window
+    public partial class PreferencesWindow
     {
         public PreferencesWindow()
             : this(0)

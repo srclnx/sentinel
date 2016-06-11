@@ -68,7 +68,11 @@
 
     <metro:MetroWindow.RightWindowCommands>
         <metro:WindowCommands>
-            <Button Content="settings"></Button>
+            <Button Content="settings">
+                <Button.Command>
+                    <Binding Path="ShowPreferences" />
+                </Button.Command>
+            </Button>
         </metro:WindowCommands>
     </metro:MetroWindow.RightWindowCommands>
     

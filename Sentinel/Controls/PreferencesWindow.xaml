@@ -1,11 +1,12 @@
-﻿<Window x:Class="Sentinel.Controls.PreferencesWindow"
+﻿<metro:MetroWindow x:Class="Sentinel.Controls.PreferencesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:Sentinel.Controls"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         Title="Preferences"
-        Height="520"
-        Width="662"
-        ResizeMode="CanResizeWithGrip"
+                   Height="677.576"
+                   Width="852.216"
+                   ResizeMode="CanResizeWithGrip"
         ShowInTaskbar="False"
         Closed="Window_Closed"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
@@ -13,4 +14,7 @@
         WindowStartupLocation="CenterOwner">
     <Controls:PreferencesControl HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch" />
-</Window>
+</metro:MetroWindow>
+
+
+
