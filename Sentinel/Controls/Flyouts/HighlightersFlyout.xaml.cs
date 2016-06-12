@@ -4,14 +4,16 @@
     using System.Runtime.CompilerServices;
     using System.Windows.Input;
 
-    using Sentinel.Annotations;
+    using JetBrains.Annotations;
 
     using WpfExtras;
+
+#pragma warning disable CS3009 // Base type is not CLS-compliant
 
     /// <summary>
     /// Interaction logic for HighlightersFlyout.xaml
     /// </summary>
-    public partial class HighlightersFlyout : INotifyPropertyChanged
+    public sealed partial class HighlightersFlyout : INotifyPropertyChanged
     {
         private bool flyoutIsOpen;
 
@@ -44,9 +46,11 @@
         }
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
+
+#pragma warning restore CS3009 // Base type is not CLS-compliant

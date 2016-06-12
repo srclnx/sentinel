@@ -123,6 +123,10 @@
       <HintPath>..\packages\squirrel.windows.1.2.5\lib\Net45\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="JetBrains.Annotations, Version=10.1.4.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.1.4\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -280,7 +284,6 @@
     <Compile Include="Interfaces\LinqHelpers.cs" />
     <Compile Include="Interfaces\LogEntryField.cs" />
     <Compile Include="Interfaces\MatchMode.cs" />
-    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="StartUp\FileMonitorOptions.cs" />
     <Compile Include="StartUp\Log4NetOptions.cs" />
     <Compile Include="Logs\Interfaces\ILogFileExporter.cs" />

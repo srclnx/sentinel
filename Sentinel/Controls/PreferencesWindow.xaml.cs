@@ -6,6 +6,8 @@
     using Sentinel.Interfaces;
     using Sentinel.Services;
 
+#pragma warning disable CS3009 // Base type is not CLS-compliant
+
     /// <summary>
     /// Interaction logic for PreferencesWindow.xaml
     /// </summary>
@@ -41,11 +43,6 @@
         // ReSharper disable once MemberCanBePrivate.Global
         public IUserPreferences Preferences { get; private set; }
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            Preferences.Show = false;
-        }
-
         public void Launch()
         {
             Owner = Application.Current.MainWindow;
@@ -57,5 +54,13 @@
 
             Show();
         }
+
+        private void WindowClosed(object sender, EventArgs e)
+        {
+            Preferences.Show = false;
+        }
     }
+
+#pragma warning restore CS3009 // Base type is not CLS-compliant
+
 }

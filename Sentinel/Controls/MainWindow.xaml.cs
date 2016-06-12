@@ -42,6 +42,8 @@
     using WpfExtras;
     using WpfExtras.Converters;
 
+#pragma warning disable CS3009 // Base type is not CLS-compliant
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -990,6 +992,8 @@
             var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is Flyouts.HighlightersFlyout);
             flyout.IsOpen = !flyout.IsOpen;
         }
-
     }
+
+#pragma warning restore CS3009 // Base type is not CLS-compliant
+
 }
