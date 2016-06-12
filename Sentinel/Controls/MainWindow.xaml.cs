@@ -987,7 +987,7 @@
         private void ShowHighlightersFlyout(object obj)
         {
             // Find the right one
-            var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is HighlightersFlyout);
+            var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is Flyouts.HighlightersFlyout);
             flyout.IsOpen = !flyout.IsOpen;
         }
 

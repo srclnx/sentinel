@@ -1,10 +1,8 @@
-﻿namespace Sentinel.Controls
+﻿namespace Sentinel.Controls.Flyouts
 {
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Windows.Input;
-
-    using MahApps.Metro.Controls;
 
     using Sentinel.Annotations;
 

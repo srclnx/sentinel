@@ -223,7 +223,7 @@
     <Compile Include="Controls\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\HighlightersFlyout.xaml.cs">
+    <Compile Include="Controls\Flyouts\HighlightersFlyout.xaml.cs">
       <DependentUpon>HighlightersFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RecentFileInfo.cs" />
@@ -348,7 +348,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\HighlightersFlyout.xaml">
+    <Page Include="Controls\Flyouts\HighlightersFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

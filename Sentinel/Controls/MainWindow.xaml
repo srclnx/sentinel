@@ -7,6 +7,7 @@
                     xmlns:converters="clr-namespace:Sentinel.Support.Converters"
                     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:controls="clr-namespace:Sentinel.Controls"
+                    xmlns:flyouts="clr-namespace:Sentinel.Controls.Flyouts"
                     x:Class="Sentinel.Controls.MainWindow"
                     Title="Sentinel"
                     Height="560"
@@ -80,7 +81,7 @@
     
     <metro:MetroWindow.Flyouts>
         <metro:FlyoutsControl x:Name="flyoutsControl">
-            <controls:HighlightersFlyout DataContext="{Binding .}"/>
+            <flyouts:HighlightersFlyout DataContext="{Binding .}"/>
         </metro:FlyoutsControl>
     </metro:MetroWindow.Flyouts>
     
