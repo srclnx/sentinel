@@ -6,6 +6,7 @@
               xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
               xmlns:controls="clr-namespace:Sentinel.Controls"
               xmlns:converters="clr-namespace:Sentinel.Support.Converters"
+              xmlns:wpfExtras="clr-namespace:WpfExtras.Converters;assembly=WpfExtras"
               mc:Ignorable="d"
               x:Name="FlyoutHighlighters"
               CloseCommand="{Binding ElementName=FlyoutHighlighters, Path=CloseFlyout}"
@@ -20,6 +21,28 @@
 
     <metro:Flyout.Resources>
         <converters:TypeToSmallImageConverter x:Key="TypeToImageConverter" />
+        <wpfExtras:CollapseIfZeroConverter x:Key="CollapseIfZero" />
+
+        <CollectionViewSource x:Key="StandardHighlighters"
+                              Source="{Binding Highlighters.Highlighters}"
+                              xmlns:me="clr-namespace:Sentinel.MarkupExtensions">
+            <CollectionViewSource.Filter>
+                <me:FilterExtension>
+                    <me:TypeFilter ImplementsInterface="IStandardDebuggingHighlighter" />
+                </me:FilterExtension>
+            </CollectionViewSource.Filter>
+        </CollectionViewSource>
+
+        <CollectionViewSource x:Key="CustomHighlighters"
+                              Source="{Binding Highlighters.Highlighters}"
+                              xmlns:me="clr-namespace:Sentinel.MarkupExtensions">
+            <CollectionViewSource.Filter>
+                <me:Filter>
+                    <me:TypeFilter NotImplementingInterface="IStandardDebuggingHighlighter" />
+                </me:Filter>
+            </CollectionViewSource.Filter>
+        </CollectionViewSource>
+
     </metro:Flyout.Resources>
 
     <StackPanel Margin="10"
@@ -34,7 +57,33 @@
         </StackPanel.Resources>
 
         <GroupBox Header="Standard">
-            <ItemsControl ItemsSource="{Binding Path=Highlighters.Highlighters}">
+            <ItemsControl ItemsSource="{Binding Source={StaticResource StandardHighlighters}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel Margin="3">
+                            <Image DockPanel.Dock="Left"
+                                   x:Name="icon"
+                                   Width="16"
+                                   Height="16"
+                                   Margin="0,0,5,0"
+                                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Source="{Binding Name, Converter={StaticResource TypeToImageConverter}}"
+                                   Visibility="Visible" />
+                            <ToggleButton Content="{Binding Name}"
+                                          ToolTip="{Binding Description}"
+                                          IsChecked="{Binding Enabled}"
+                                          Margin="5" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </GroupBox>
+
+        <GroupBox Header="Custom"
+                  Visibility="{Binding Source={StaticResource CustomHighlighters}, Path=Count, Converter={StaticResource CollapseIfZero}}">
+            <ItemsControl ItemsSource="{Binding Source={StaticResource CustomHighlighters}}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <DockPanel Margin="3">

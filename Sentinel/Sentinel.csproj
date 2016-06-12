@@ -287,6 +287,9 @@
     <Compile Include="Interfaces\LinqHelpers.cs" />
     <Compile Include="Interfaces\LogEntryField.cs" />
     <Compile Include="Interfaces\MatchMode.cs" />
+    <Compile Include="MarkupExtensions\FilterExtension.cs" />
+    <Compile Include="MarkupExtensions\IFilter.cs" />
+    <Compile Include="MarkupExtensions\TypeFilter.cs" />
     <Compile Include="StartUp\FileMonitorOptions.cs" />
     <Compile Include="StartUp\Log4NetOptions.cs" />
     <Compile Include="Logs\Interfaces\ILogFileExporter.cs" />
