@@ -75,10 +75,6 @@
             GetRecentlyOpenedFiles();
         }
 
-        //public ICommand OpenHighlightersFlyoutCommand { get; set; }
-
-        //public ICommand OpenFiltersFlyoutCommand { get; set; }
-
         public ICommand ToggleFlyoutsCommand { get; set; }
 
         // ReSharper disable once MemberCanBePrivate.Global
@@ -430,8 +426,6 @@
             RecentFiles = new ObservableCollection<string>(recentFilePathList.Take(13));
 
             ToggleFlyoutsCommand = new DelegateCommand(ToggleFlyouts);
-            //OpenHighlightersFlyoutCommand = new DelegateCommand(ShowHighlightersFlyout);
-            //OpenFiltersFlyoutCommand = new DelegateCommand(ShowFiltersFlyout);
 
             BindViewToViewModel();
 
@@ -991,20 +985,6 @@
             }
 
             preferencesWindow.Launch();
-        }
-
-        private void ShowHighlightersFlyout(object obj)
-        {
-            // Find the right one
-            var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is Flyouts.HighlightersFlyout);
-            flyout.IsOpen = !flyout.IsOpen;
-        }
-
-        private void ShowFiltersFlyout(object obj)
-        {
-            // Find the right one
-            var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is Flyouts.FiltersFlyout);
-            flyout.IsOpen = !flyout.IsOpen;
         }
 
         private void ToggleFlyouts(object obj)
