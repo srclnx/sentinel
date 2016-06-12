@@ -17,7 +17,7 @@
                     Closing="OnClosed"
                     Background="{Binding Source={x:Static SystemColors.MenuBarBrush}}"
                     ResizeMode="CanResizeWithGrip"
-                    d:DataContext="{d:DesignData }">
+                    d:DataContext="{d:DesignInstance controls:MainWindow}">
 
     <metro:MetroWindow.Resources>
         <Style
@@ -82,6 +82,7 @@
     <metro:MetroWindow.Flyouts>
         <metro:FlyoutsControl x:Name="flyoutsControl">
             <flyouts:HighlightersFlyout DataContext="{Binding .}"/>
+            <flyouts:FiltersFlyout DataContext="{Binding .}" />
         </metro:FlyoutsControl>
     </metro:MetroWindow.Flyouts>
     
@@ -89,7 +90,10 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Content="Highlighters"
                     Margin="2"
-                    Command="{Binding Path=OpenHighlightersFlyoutCommand}"></Button>
+                    Command="{Binding Path=OpenHighlightersFlyoutCommand}" />
+            <Button Content="Filters"
+                    Margin="2"
+                    Command="{Binding Path=OpenFiltersFlyoutCommand}" />
         </StackPanel>
         <TabControl x:Name="tabControl" />
     </DockPanel>

@@ -77,6 +77,8 @@
 
         public ICommand OpenHighlightersFlyoutCommand { get; set; }
 
+        public ICommand OpenFiltersFlyoutCommand { get; set; }
+
         // ReSharper disable once MemberCanBePrivate.Global
         public ICommand Add { get; private set; }
 
@@ -425,6 +427,7 @@
             LoadSession = new DelegateCommand(LoadSessionAction);
             RecentFiles = new ObservableCollection<string>(recentFilePathList.Take(13));
             OpenHighlightersFlyoutCommand = new DelegateCommand(ShowHighlightersFlyout);
+            OpenFiltersFlyoutCommand = new DelegateCommand(ShowFiltersFlyout);
 
             BindViewToViewModel();
 
@@ -990,6 +993,13 @@
         {
             // Find the right one
             var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is Flyouts.HighlightersFlyout);
+            flyout.IsOpen = !flyout.IsOpen;
+        }
+
+        private void ShowFiltersFlyout(object obj)
+        {
+            // Find the right one
+            var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is Flyouts.FiltersFlyout);
             flyout.IsOpen = !flyout.IsOpen;
         }
     }

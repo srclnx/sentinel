@@ -227,6 +227,9 @@
     <Compile Include="Controls\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Flyouts\FiltersFlyout.xaml.cs">
+      <DependentUpon>FiltersFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Flyouts\HighlightersFlyout.xaml.cs">
       <DependentUpon>HighlightersFlyout.xaml</DependentUpon>
     </Compile>
@@ -348,6 +351,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Flyouts\FiltersFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
