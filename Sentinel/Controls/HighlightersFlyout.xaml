@@ -12,7 +12,8 @@
               IsOpen="{Binding ElementName=FlyoutHighlight, Path=FlyoutIsOpen}"
               Position="Right"
               Header="Highlighters"
-              Theme="Accent"
+              Theme="Dark"
+              MinWidth="250"
               d:DesignHeight="300"
               d:DesignWidth="300"
               d:DataContext="{d:DesignInstance controls:MainWindow}">
@@ -23,7 +24,7 @@
 
     <StackPanel Margin="10"
                 Orientation="Vertical">
-        
+
         <StackPanel.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
@@ -32,29 +33,29 @@
             </ResourceDictionary>
         </StackPanel.Resources>
 
-        <ItemsControl ItemsSource="{Binding Path=Highlighters.Highlighters}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Image x:Name="icon"
-                               Width="16"
-                               Height="16"
-                               RenderOptions.BitmapScalingMode="NearestNeighbor"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               Source="{Binding Name, Converter={StaticResource TypeToImageConverter}}"
-                               Visibility="Visible" />
-                        <ToggleButton Content="{Binding Name}"
-                                      ToolTip="{Binding Description}"
-                                      IsChecked="{Binding Enabled}"
-                                      Margin="5" />
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <Label Content="{Binding Path=Highlighters.Highlighters}"></Label>
+        <GroupBox Header="Standard">
+            <ItemsControl ItemsSource="{Binding Path=Highlighters.Highlighters}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel Margin="3">
+                            <Image DockPanel.Dock="Left"
+                                   x:Name="icon"
+                                   Width="16"
+                                   Height="16"
+                                   Margin="0,0,5,0"
+                                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Source="{Binding Name, Converter={StaticResource TypeToImageConverter}}"
+                                   Visibility="Visible" />
+                            <ToggleButton Content="{Binding Name}"
+                                          ToolTip="{Binding Description}"
+                                          IsChecked="{Binding Enabled}"
+                                          Margin="5" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </GroupBox>
     </StackPanel>
 </metro:Flyout>
-
-
-
