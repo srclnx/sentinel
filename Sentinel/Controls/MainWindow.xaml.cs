@@ -995,7 +995,7 @@
 
             if (target == null)
             {
-                Log.Warn("Flyout named {} not found");
+                Log.Warn($"Flyout named {targetName} not found");
                 Log.Debug("Note, the Flyout element name is used to find the flyout, not the class name");
                 return;
             }
