@@ -5,7 +5,7 @@
               xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
               xmlns:converters="clr-namespace:Sentinel.Support.Converters"
               x:Name="FlyoutFilters"
-              CloseCommand="{Binding ElementName=FlyoutFilters, Path=CloseFlyout}"
+              CloseCommand="{Binding ElementName=FiltersFlyout, Path=CloseFlyout}"
               IsOpen="{Binding ElementName=FlyoutFilters, Path=FlyoutIsOpen}"
               Position="Right"
               Header="Filters"

@@ -75,9 +75,11 @@
             GetRecentlyOpenedFiles();
         }
 
-        public ICommand OpenHighlightersFlyoutCommand { get; set; }
+        //public ICommand OpenHighlightersFlyoutCommand { get; set; }
 
-        public ICommand OpenFiltersFlyoutCommand { get; set; }
+        //public ICommand OpenFiltersFlyoutCommand { get; set; }
+
+        public ICommand ToggleFlyoutsCommand { get; set; }
 
         // ReSharper disable once MemberCanBePrivate.Global
         public ICommand Add { get; private set; }
@@ -426,8 +428,10 @@
             NewSession = new DelegateCommand(NewSessionAction);
             LoadSession = new DelegateCommand(LoadSessionAction);
             RecentFiles = new ObservableCollection<string>(recentFilePathList.Take(13));
-            OpenHighlightersFlyoutCommand = new DelegateCommand(ShowHighlightersFlyout);
-            OpenFiltersFlyoutCommand = new DelegateCommand(ShowFiltersFlyout);
+
+            ToggleFlyoutsCommand = new DelegateCommand(ToggleFlyouts);
+            //OpenHighlightersFlyoutCommand = new DelegateCommand(ShowHighlightersFlyout);
+            //OpenFiltersFlyoutCommand = new DelegateCommand(ShowFiltersFlyout);
 
             BindViewToViewModel();
 
@@ -1001,6 +1005,36 @@
             // Find the right one
             var flyout = Flyouts.Items.Cast<Flyout>().Single(f => f is Flyouts.FiltersFlyout);
             flyout.IsOpen = !flyout.IsOpen;
+        }
+
+        private void ToggleFlyouts(object obj)
+        {
+            // Find out which control we're talking about.
+            var targetName = obj.ToString();
+            var target = Flyouts.Items.Cast<Flyout>().SingleOrDefault(f => f.Name == targetName);
+
+            if (target == null)
+            {
+                Log.Warn("Flyout named {} not found");
+                Log.Debug("Note, the Flyout element name is used to find the flyout, not the class name");
+                return;
+            }
+
+            // Are any open?
+            var alreadyOpen = Flyouts.Items.Cast<Flyout>().Where(f => f.IsOpen).ToList();
+            if (alreadyOpen.Count > 1)
+            {
+                Log.Warn("More than one flyout open!");
+            }
+
+            // Is it different to desired toggle (if so, also toggle that one)
+            if (alreadyOpen.Any() && alreadyOpen.First().Name != targetName)
+            {
+                alreadyOpen.First().IsOpen = false;
+            }
+
+            // Toggle intended
+            target.IsOpen = !target.IsOpen;
         }
     }
 

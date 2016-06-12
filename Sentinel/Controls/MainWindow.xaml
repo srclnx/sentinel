@@ -90,10 +90,12 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Content="Highlighters"
                     Margin="2"
-                    Command="{Binding Path=OpenHighlightersFlyoutCommand}" />
+                    Command="{Binding Path=ToggleFlyoutsCommand}"
+                    CommandParameter="FlyoutHighlighters"/>
             <Button Content="Filters"
                     Margin="2"
-                    Command="{Binding Path=OpenFiltersFlyoutCommand}" />
+                    Command="{Binding Path=ToggleFlyoutsCommand}"
+                    CommandParameter="FlyoutFilters" />
         </StackPanel>
         <TabControl x:Name="tabControl" />
     </DockPanel>
