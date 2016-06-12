@@ -6,6 +6,8 @@
     using Sentinel.Interfaces;
     using Sentinel.Services;
 
+    using Common.Logging;
+
 #pragma warning disable CS3009 // Base type is not CLS-compliant
 
     /// <summary>
@@ -13,6 +15,8 @@
     /// </summary>
     public partial class PreferencesWindow
     {
+        private static readonly ILog Log = LogManager.GetLogger<PreferencesWindow>();
+
         public PreferencesWindow()
             : this(0)
         {
@@ -29,6 +33,7 @@
                            {
                                if (HideOnClose)
                                {
+                                   Log.Trace("Hiding window");
                                    Hide();
                                    e.Cancel = true;
                                }
@@ -57,6 +62,7 @@
 
         private void WindowClosed(object sender, EventArgs e)
         {
+            Log.Trace("Window closed, setting Preferences.Show to false");
             Preferences.Show = false;
         }
     }

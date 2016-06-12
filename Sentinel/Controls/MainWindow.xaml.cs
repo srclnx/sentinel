@@ -418,7 +418,7 @@
                     });
 
             Add = new DelegateCommand(AddNewListenerAction, b => tabControl.Items.Count < 1);
-            ShowPreferences = new DelegateCommand(ShowPreferencesAction);
+            ShowPreferences = new DelegateCommand(ShowPreferencesAction, o => Preferences.Show != true);
             ExportLogs = new DelegateCommand(ExportLogsAction, b => tabControl.Items.Count > 0);
             SaveSession = new DelegateCommand(SaveSessionAction);
             NewSession = new DelegateCommand(NewSessionAction);

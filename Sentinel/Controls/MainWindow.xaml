@@ -8,6 +8,7 @@
                     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:controls="clr-namespace:Sentinel.Controls"
                     xmlns:flyouts="clr-namespace:Sentinel.Controls.Flyouts"
+                    xmlns:wpfExtras="clr-namespace:WpfExtras.Converters;assembly=WpfExtras"
                     x:Class="Sentinel.Controls.MainWindow"
                     Title="Sentinel"
                     Height="560"
@@ -57,11 +58,14 @@
         <converters:TypeToMediumImageConverter x:Key="typeToMediumImage" />
         <converters:TypeToSmallImageConverter x:Key="typeToSmallImage" />
         <converters:LongPathToShortPathConverter x:Key="longPathToShortPath" />
+        <wpfExtras:BooleanInvertingValueConverter x:Key="BooleanInvertingValueConverter" />
     </metro:MetroWindow.Resources>
 
     <metro:MetroWindow.RightWindowCommands>
         <metro:WindowCommands>
-            <Button Content="settings" Click="ShowPreferencesDialog">
+            <Button Content="settings"
+                    Command="{Binding ShowPreferences}"
+                    IsEnabled="{Binding Preferences.Show, Converter={StaticResource BooleanInvertingValueConverter}}">
                 <!--<Button.Command>
                     <Binding Path="ShowPreferences" />
                 </Button.Command>-->

@@ -2,9 +2,12 @@
 {
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Windows.Data;
     using System.Windows.Input;
 
     using JetBrains.Annotations;
+
+    using Sentinel.Filters.Interfaces;
 
     using WpfExtras;
 
@@ -22,6 +25,21 @@
             InitializeComponent();
 
             CloseFlyout = new DelegateCommand(o => FlyoutIsOpen = false);
+
+            // The Xaml designer is quite poor at coping with markup extensions, flagging
+            // errors that do not appear at runtime, instead of using the FilterExtension, will
+            // do it in code-behind.
+            var standard = Resources["StandardFilters"] as CollectionViewSource;
+            if (standard != null)
+            {
+                standard.Filter += (o, args) => args.Accepted = args.Item is IStandardDebuggingFilter;
+            }
+
+            var custom = Resources["CustomFilters"] as CollectionViewSource;
+            if (custom != null)
+            {
+                custom.Filter += (o, args) => args.Accepted = !(args.Item is IStandardDebuggingFilter);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
