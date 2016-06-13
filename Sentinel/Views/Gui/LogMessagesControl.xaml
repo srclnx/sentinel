@@ -16,10 +16,10 @@
         <Converters:BooleanToWidthConverter x:Key="BooleanToWidthConverter" />
         <Converters:MessageHasExceptionMetadataConverter x:Key="MessageHasExceptionMetadata" />
         <Converters:MetadataConverter x:Key="MetadataConverter" />
-        <Style TargetType="ListViewItem">
+        <!--<Style TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment"
                     Value="Stretch" />
-        </Style>
+        </Style>-->
         <Converters:TimePreferenceConverter x:Key="TimePreferenceConverter" />
         <Converters:DatePreferenceConverter x:Key="DatePreferenceConverter" />
     </UserControl.Resources>
@@ -27,6 +27,7 @@
     <Grid x:Name="LayoutRoot">
         <ListView x:Name="messages"
                   Grid.Column="0"
+                  Style="{x:Null}"
                   ItemsSource="{Binding Messages}">
             <ListView.View>
                 <GridView>
