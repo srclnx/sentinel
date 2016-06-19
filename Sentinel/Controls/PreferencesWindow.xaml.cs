@@ -3,10 +3,10 @@
     using System;
     using System.Windows;
 
+    using Common.Logging;
+
     using Sentinel.Interfaces;
     using Sentinel.Services;
-
-    using Common.Logging;
 
 #pragma warning disable CS3009 // Base type is not CLS-compliant
 
