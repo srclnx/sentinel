@@ -1,4 +1,4 @@
-﻿<Window x:Class="Sentinel.Classification.Gui.AddEditClassifierWindow"
+<Window x:Class="Sentinel.Classification.Gui.AddEditClassifierWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"

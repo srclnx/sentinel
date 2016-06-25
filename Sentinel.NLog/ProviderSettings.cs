@@ -1,4 +1,4 @@
-﻿namespace Sentinel.NLog
+namespace Sentinel.NLog
 {
     using System.Runtime.Serialization;
 

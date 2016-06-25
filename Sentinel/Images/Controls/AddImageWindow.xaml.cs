@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Images.Controls
+namespace Sentinel.Images.Controls
 {
     using System.Windows;
 

@@ -1,4 +1,4 @@
-﻿namespace NLog3Tester
+namespace NLog3Tester
 {
     using System;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Highlighters.Gui
+namespace Sentinel.Highlighters.Gui
 {
     using System.Windows.Controls;
 

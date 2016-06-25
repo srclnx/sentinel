@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Controls
+namespace Sentinel.Controls
 {
     using System;
     using System.Collections.Generic;

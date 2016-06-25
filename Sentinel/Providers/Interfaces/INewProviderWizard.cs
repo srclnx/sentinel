@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Providers.Interfaces
+namespace Sentinel.Providers.Interfaces
 {
     using System.Windows;
 

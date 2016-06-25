@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Support
+namespace Sentinel.Support
 {
     using System;
     using System.ComponentModel;

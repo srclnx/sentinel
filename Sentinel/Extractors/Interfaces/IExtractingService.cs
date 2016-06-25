@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Extractors.Interfaces
+namespace Sentinel.Extractors.Interfaces
 {
     using System.Collections.ObjectModel;
     using System.Runtime.Serialization;

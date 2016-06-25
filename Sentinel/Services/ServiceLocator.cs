@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Services
+namespace Sentinel.Services
 {
     using System;
     using System.Collections.Generic;

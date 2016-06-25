@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Logs
+namespace Sentinel.Logs
 {
     using System;
     using System.Collections;

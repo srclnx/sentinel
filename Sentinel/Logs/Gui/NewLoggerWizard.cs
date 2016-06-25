@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Logs.Gui
+namespace Sentinel.Logs.Gui
 {
     using System.Diagnostics;
     using System.Windows;

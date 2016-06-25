@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Classification.Gui
+namespace Sentinel.Classification.Gui
 {
     using System.Windows.Controls;
 

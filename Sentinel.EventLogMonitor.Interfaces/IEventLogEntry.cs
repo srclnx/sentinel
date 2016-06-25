@@ -1,4 +1,4 @@
-﻿namespace Sentinel.EventLogMonitor.Interfaces
+namespace Sentinel.EventLogMonitor.Interfaces
 {
     using System;
     using System.Diagnostics;

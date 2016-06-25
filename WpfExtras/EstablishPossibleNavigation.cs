@@ -1,4 +1,4 @@
-﻿namespace WpfExtras
+namespace WpfExtras
 {
     public class EstablishPossibleNavigation
     {

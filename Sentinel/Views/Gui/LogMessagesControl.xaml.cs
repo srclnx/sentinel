@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Views.Gui
+namespace Sentinel.Views.Gui
 {
     using System;
     using System.ComponentModel;

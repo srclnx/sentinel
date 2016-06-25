@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Preferences
+namespace Sentinel.Preferences
 {
     using System.Collections.Generic;
     using System.Runtime.Serialization;

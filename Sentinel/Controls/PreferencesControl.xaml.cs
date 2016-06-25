@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Controls
+namespace Sentinel.Controls
 {
     /// <summary>
     /// Interaction logic for PreferencesControl.xaml

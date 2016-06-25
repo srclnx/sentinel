@@ -1,4 +1,4 @@
-﻿namespace Sentinel.MarkupExtensions
+namespace Sentinel.MarkupExtensions
 {
     using System;
     using System.Linq;

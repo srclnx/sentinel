@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Highlighters.Interfaces
+namespace Sentinel.Highlighters.Interfaces
 {
     public interface IStandardDebuggingHighlighter : IHighlighter
     {

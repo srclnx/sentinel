@@ -1,4 +1,4 @@
-﻿namespace Log4NetTester
+namespace Log4NetTester
 {
     using System;
     using System.Collections.Generic;

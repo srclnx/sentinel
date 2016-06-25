@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Highlighters
+namespace Sentinel.Highlighters
 {
     using Interfaces;
     using Sentinel.Interfaces;

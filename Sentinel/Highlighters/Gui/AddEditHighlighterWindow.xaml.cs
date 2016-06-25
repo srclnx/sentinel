@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Highlighters.Gui
+namespace Sentinel.Highlighters.Gui
 {
 #pragma warning disable CS3009 // Base type is not CLS-compliant
     /// <summary>

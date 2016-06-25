@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Controls.Flyouts
+namespace Sentinel.Controls.Flyouts
 {
     using System.ComponentModel;
     using System.Runtime.CompilerServices;

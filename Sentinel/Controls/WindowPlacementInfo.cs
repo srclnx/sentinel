@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Controls
+namespace Sentinel.Controls
 {
     using System.Runtime.Serialization;
     using System.Windows;

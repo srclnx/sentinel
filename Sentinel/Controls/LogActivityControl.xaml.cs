@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Controls
+namespace Sentinel.Controls
 {
     using Sentinel.Highlighters.Interfaces;
     using Sentinel.Services;

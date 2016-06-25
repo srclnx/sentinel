@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Extractors.Gui
+namespace Sentinel.Extractors.Gui
 {
     using System.Windows.Controls;
 

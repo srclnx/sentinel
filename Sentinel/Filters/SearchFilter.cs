@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Filters
+namespace Sentinel.Filters
 {
     using System.Runtime.Serialization;
 

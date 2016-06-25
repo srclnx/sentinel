@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Classification
+namespace Sentinel.Classification
 {
     using System;
     using System.Runtime.Serialization;

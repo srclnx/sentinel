@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Interfaces
+namespace Sentinel.Interfaces
 {
     using System;
     using System.Collections.Specialized;

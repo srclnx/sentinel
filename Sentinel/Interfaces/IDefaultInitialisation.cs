@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Interfaces
+namespace Sentinel.Interfaces
 {
     public interface IDefaultInitialisation
     {

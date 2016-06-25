@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Services.Interfaces
+namespace Sentinel.Services.Interfaces
 {
     using System.Collections.Generic;
     using System.Runtime.Serialization;

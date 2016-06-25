@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Support.Wpf
+namespace Sentinel.Support.Wpf
 {
     using System.Windows.Controls;
     using System.Windows.Threading;

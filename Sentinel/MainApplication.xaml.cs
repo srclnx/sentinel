@@ -1,4 +1,4 @@
-﻿namespace Sentinel
+namespace Sentinel
 {
     using System;
     using System.Net.Sockets;

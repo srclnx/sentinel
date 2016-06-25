@@ -1,4 +1,4 @@
-﻿namespace NLog4Tester
+namespace NLog4Tester
 {
     using System;
     using System.Collections.Generic;

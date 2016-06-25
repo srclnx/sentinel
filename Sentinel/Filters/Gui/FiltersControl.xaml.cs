@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Filters.Gui
+namespace Sentinel.Filters.Gui
 {
     using System.Windows.Controls;
 

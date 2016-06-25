@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Logs.Gui
+namespace Sentinel.Logs.Gui
 {
     using System.Collections.ObjectModel;
     using System.ComponentModel;

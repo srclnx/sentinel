@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Views
+namespace Sentinel.Views
 {
     using System;
     using System.Collections.Generic;

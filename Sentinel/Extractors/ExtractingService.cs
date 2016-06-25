@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Extractors
+namespace Sentinel.Extractors
 {
     using System.Collections.ObjectModel;
     using System.ComponentModel;

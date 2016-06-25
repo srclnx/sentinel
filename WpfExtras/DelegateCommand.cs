@@ -1,4 +1,4 @@
-﻿namespace WpfExtras
+namespace WpfExtras
 {
     using System;
     using System.Windows.Input;

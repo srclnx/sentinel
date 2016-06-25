@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Images.Interfaces
+namespace Sentinel.Images.Interfaces
 {
     using System.Collections.ObjectModel;
     using System.Runtime.Serialization;

@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Support.Converters
+namespace Sentinel.Support.Converters
 {
     using System;
     using System.Diagnostics;

@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Logs.Interfaces
+namespace Sentinel.Logs.Interfaces
 {
     using Sentinel.Views.Interfaces;
 

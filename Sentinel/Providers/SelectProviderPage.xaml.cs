@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Providers
+namespace Sentinel.Providers
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

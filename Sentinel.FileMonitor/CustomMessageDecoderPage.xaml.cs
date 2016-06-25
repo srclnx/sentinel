@@ -1,4 +1,4 @@
-﻿namespace Sentinel.FileMonitor
+namespace Sentinel.FileMonitor
 {
     using System;
     using System.Collections.ObjectModel;

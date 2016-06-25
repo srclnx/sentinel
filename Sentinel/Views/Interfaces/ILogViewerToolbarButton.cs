@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Views.Interfaces
+namespace Sentinel.Views.Interfaces
 {
     using System.Windows.Input;
 

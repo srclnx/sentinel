@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Extractors.Interfaces
+namespace Sentinel.Extractors.Interfaces
 {
     public interface IRemoveExtractorService
     {

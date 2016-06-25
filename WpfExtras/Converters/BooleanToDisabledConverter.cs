@@ -1,4 +1,4 @@
-﻿namespace WpfExtras.Converters
+namespace WpfExtras.Converters
 {
     using System;
     using System.Globalization;

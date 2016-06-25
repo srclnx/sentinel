@@ -1,4 +1,4 @@
-﻿namespace Sentinel.Log4Net
+namespace Sentinel.Log4Net
 {
     using System.Collections.ObjectModel;
     using System.ComponentModel;

@@ -22,4 +22,4 @@ using System.Resources;
 [assembly: CLSCompliant(true)]
 
 [assembly: AssemblyCompany("Ray Hayes, Ishmal Lewis, et al.")]
-[assembly: AssemblyCopyright("Copyright © Ray Hayes 2009-2016")]
+[assembly: AssemblyCopyright("Copyright ï¿½ Ray Hayes 2009-2016")]
