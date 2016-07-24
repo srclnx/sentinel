@@ -275,9 +275,13 @@
                                                    { "Host", host }
                                                }
                             };
-            if (entry.Description.ToUpper().Contains("EXCEPTION"))
+
+            var exception = record.Elements(log4J + "throwable").ToList();
+            if (exception.Any())
             {
-                entry.Metadata.Add("Exception", true);
+                // NOTE: nLog seems to incorrectly send the exception over twice, once as text, the other time as CDATA.
+                // They have the same content - so for now, just using the first of the two, the text.
+                entry.Metadata.Add("Exception", exception.First().Value);
             }
 
             if (!string.IsNullOrWhiteSpace(className))
