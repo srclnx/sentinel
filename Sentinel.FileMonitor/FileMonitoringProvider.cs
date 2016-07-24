@@ -99,9 +99,16 @@ namespace Sentinel.FileMonitor
 
         private string FileName { get; }
 
-        private BackgroundWorker Worker { get; set; } = new BackgroundWorker();
+        private BackgroundWorker Worker { get; set; } = new BackgroundWorker
+                                                            {
+                                                                WorkerSupportsCancellation = true
+                                                            };
 
-        private BackgroundWorker PurgeWorker { get; set; } = new BackgroundWorker { WorkerReportsProgress = true };
+        private BackgroundWorker PurgeWorker { get; set; } = new BackgroundWorker
+                                                                 {
+                                                                     WorkerReportsProgress = true,
+                                                                     WorkerSupportsCancellation = true
+                                                                 };
 
         public void Start()
         {

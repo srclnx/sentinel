@@ -86,38 +86,11 @@
                                     DisplayMemberBinding="{Binding Metadata, Converter={StaticResource MetadataConverter}, ConverterParameter='Host'}" />
                     <GridViewColumn Header="System"
                                     DisplayMemberBinding="{Binding System}" />
-                    <Controls:FixedWidthColumn FixedWidth="{Binding Preferences.ShowExceptionColumn, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=30}">
-                        <Controls:FixedWidthColumn.Header>
-                            <Image Width="12"
-                                   Height="12"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   RenderOptions.BitmapScalingMode="HighQuality"
-                                   Source="../../Resources/Small/MonoLightning.png" />
-                        </Controls:FixedWidthColumn.Header>
-                        <Controls:FixedWidthColumn.CellTemplate>
-                            <DataTemplate>
-                                <Image x:Name="icon"
-                                       Width="16"
-                                       Height="16"
-                                       RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"
-                                       Source="../../Resources/Small/Exception.png"
-                                       Visibility="Hidden" />
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding Converter={StaticResource MessageHasExceptionMetadata}}"
-                                                 Value="true">
-                                        <Setter TargetName="icon"
-                                                Property="Visibility"
-                                                Value="Visible" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
-                            </DataTemplate>
-                        </Controls:FixedWidthColumn.CellTemplate>
-                    </Controls:FixedWidthColumn>
                     <GridViewColumn Header="Description"
                                     DisplayMemberBinding="{Binding Description}" />
+                    <GridViewColumn Header="Exception"
+                                    Width="{Binding Preferences.ShowExceptionColumn, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=130}"
+                                    DisplayMemberBinding="{Binding Metadata, Converter={StaticResource MetadataConverter}, ConverterParameter='Exception'}" />
                     <GridViewColumn Header="Source File"
                                     Width="{Binding Preferences.ShowSourceInformationColumns, RelativeSource={RelativeSource AncestorType={x:Type Windows:MainWindow}, Mode=FindAncestor}, Converter={StaticResource BooleanToWidthConverter}, ConverterParameter=130}"
                                     DisplayMemberBinding="{Binding Metadata, Converter={StaticResource MetadataConverter}, ConverterParameter='SourceFile'}" />

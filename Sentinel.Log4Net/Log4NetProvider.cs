@@ -296,11 +296,6 @@ namespace Sentinel.Log4Net
                                            Metadata = metadata
                                        };
 
-                    if (logEntry.Description.ToUpper().Contains("EXCEPTION"))
-                    {
-                        logEntry.Metadata.Add("Exception", true);
-                    }
-
                     if (!string.IsNullOrWhiteSpace(className))
                     {
                         // TODO: use an object for these?

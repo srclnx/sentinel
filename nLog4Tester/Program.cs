@@ -2,6 +2,7 @@ namespace NLog4Tester
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading;
 
     using NLog;
@@ -65,6 +66,11 @@ namespace NLog4Tester
                     break;
                 case 4:
                     Log.Trace(text);
+                    break;
+                case 5:
+                    var embeddedException = new NotSupportedException();
+                    var keyNotFoundException = new KeyNotFoundException("Some wrapped message", embeddedException);
+                    Log.Error(keyNotFoundException, text);
                     break;
                 default:
                     Log.Debug(text);
