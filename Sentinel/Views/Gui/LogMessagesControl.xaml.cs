@@ -169,6 +169,11 @@
                         {
                             Log.Trace(entry.Type);
                             Log.Trace(entry.Description);
+
+                            if (entry.Metadata.ContainsKey("Exception"))
+                            {
+                                Log.Trace(entry.Metadata["Exception"]);
+                            }
                         }
                     }
                 }
