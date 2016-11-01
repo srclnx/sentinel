@@ -19,8 +19,14 @@ namespace Sentinel.NLog
             isUdp = protocol == NetworkProtocol.Udp;
             if (isUdp)
             {
-                udpClient = new UdpClient { ExclusiveAddressUse = false };
+                var socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp);
+                udpClient = new UdpClient
+                {
+                    ExclusiveAddressUse = false,
+                    Client = socket
+                };
                 udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                udpClient.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0);
                 udpClient.Client.Bind(endPoint);
             }
             else

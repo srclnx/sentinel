@@ -118,7 +118,7 @@
 
             while (!cancellationTokenSource.IsCancellationRequested)
             {
-                var endPoint = new IPEndPoint(IPAddress.Any, networkSettings.Port);
+                var endPoint = new IPEndPoint(IPAddress.IPv6Any, networkSettings.Port);
 
                 using (var listener = new NetworkClientWrapper(networkSettings.Protocol, endPoint))
                 {
