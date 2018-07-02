@@ -220,6 +220,9 @@
 
             // Establish whether a sub-system seems to be defined.
             var description = record.Element(log4J + "message").Value;
+            var exceptionElement = record.Element(log4J + "throwable");
+            if (exceptionElement != null) description += "\r\n" + exceptionElement.Value;
+
 
             var classification = string.Empty;
             var system = record.Attribute("logger")?.Value ?? string.Empty;
